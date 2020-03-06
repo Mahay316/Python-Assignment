@@ -12,6 +12,6 @@ Repo for submitting Python assignment.
     ├── 0228/          // 2月28日练习  
     ├── 0304/          // 3月4日练习  
     ├── 0306/          // 3月6日练习  
-├── Assign/             // 作业
-    ├── ...
+├── Homework/          // 作业
+    ├── homework1/     //第一次作业
 ```
