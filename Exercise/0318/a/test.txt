@@ -1,0 +1,3 @@
+This is a file
+dedicated to testing.
+测试文件
