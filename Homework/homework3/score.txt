@@ -1,0 +1,10 @@
+001 John 88
+003 Peter 98
+004 Han 76
+005 Ross 56
+006 David 100
+007 Mary 99
+010 Jessica 76
+012 Flower 89
+015 Adam 86
+016 Groot 94
