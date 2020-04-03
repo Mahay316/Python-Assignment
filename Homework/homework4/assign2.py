@@ -14,7 +14,7 @@ def print_date(base, target_date):
     if target_date < base:
         print("日期格式有误，目标日期必须后于基准日期")
         return
-    
+
     delta = target_date - base
     print("第{0}周, ".format(delta.days // 7 + 1), end="")
     print("星期{0}".format(num_2_char[target_date.weekday()]))
