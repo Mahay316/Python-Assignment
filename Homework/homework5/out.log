@@ -1,0 +1,18 @@
+2020-04-07T18:11:58.272090
+invoke function add with args(1, 2) and keyword args{}
+return value: 3
+2020-04-07T18:11:58.272834
+invoke function add with args(5, 10) and keyword args{'doPrint': True}
+return value: 15
+2020-04-07T18:11:58.273156
+invoke function add with args(2, 34) and keyword args{}
+return value: 36
+2020-04-07T18:59:46.601769
+invoke function add with args(1, 2) and keyword args{}
+return value: 3
+2020-04-07T18:59:46.603036
+invoke function add with args(5, 10) and keyword args{'doPrint': True}
+return value: 15
+2020-04-07T18:59:46.603761
+invoke function add with args(2, 34) and keyword args{}
+return value: 36
