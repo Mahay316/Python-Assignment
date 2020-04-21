@@ -38,7 +38,8 @@ class Fight:
         self.dogs[dog].atk -= (self.people[man].atk > 0) * 3
 
         print(f'人{self.people[man].no}攻击了狗{self.dogs[dog].no}，', end='')
-        print(f'hp -{self.people[man].atk}，狗{self.dogs[dog].no}剩余血量{self.dogs[dog].hp}')
+        print(f'hp -{self.people[man].atk}，狗{self.dogs[dog].no}', end='')
+        print(f'剩余血量{self.dogs[dog].hp}')
         # 去除血量为0的个体
         if self.dogs[dog].is_dead():
             print(f'狗{self.dogs[dog].no}死亡')
@@ -55,7 +56,8 @@ class Fight:
         self.people[man].atk -= (self.dogs[dog].atk > 0) * 2
 
         print(f'狗{self.dogs[dog].no}攻击了人{self.people[man].no}，', end='')
-        print(f'hp -{self.dogs[dog].atk}，人{self.people[man].no}剩余血量{self.people[man].hp}')
+        print(f'hp -{self.dogs[dog].atk}，人{self.people[man].no}', end='')
+        print(f'剩余血量{self.people[man].hp}')
         # 去除血量为0的个体
         if self.people[man].is_dead():
             print(f'人{self.people[man].no}死亡')
@@ -98,7 +100,7 @@ class Fight:
             print(f"-------- ROUND {i} --------")
             self.round()
             i += 1
-            # sleep(1)
+            sleep(0.5)
 
         print('\n 胜负决出，%s！' % ('人胜' if self.__result() == 1 else '狗胜'))
 
