@@ -27,4 +27,5 @@ Repo for submitting Python assignment.
     ├── homework3/     // 3月24日第三次作业
     ├── homework4/     // 4月3日第四次作业
     ├── homework5/     // 4月7日第五次作业
+    ├── homework6/     // 4月22日第六次作业
 ```
