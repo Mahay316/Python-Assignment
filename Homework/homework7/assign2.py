@@ -95,9 +95,9 @@ keywords_list = [
     '企业介绍', '关于我们', '企业发展', '发展历史', '企业概况', '简介'
 ]
 os.chdir('Homework/homework7')
+tasks = []
 # 使用线程池同时爬取多个网站
 executor = ThreadPoolExecutor(max_workers=8)
-tasks = []
 with open('assign1_urls.txt', 'r', encoding='utf-8') as f:
     for i in range(100):
         tk = executor.submit(searchForTitle,
@@ -112,3 +112,6 @@ with open('assign2_about.txt', 'w', encoding='utf-8') as f:
         f.write(data[0] + ' -> ' + str(data[1]))
         f.write('\n')
         f.flush()
+
+# 释放线程池资源
+executor.shutdown()
