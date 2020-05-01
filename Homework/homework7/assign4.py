@@ -1,27 +1,40 @@
-# 4. 爬取网址http://www.python3.vip/doc/prac/python/0001/
-# 所有的Python练习题题目和答案
+# 4. 爬取网址https://www.programcreek.com/python/index/37/json
+# 所有的Python示例程序
 # 保存到txt文件中（只保留文字）
+import os
 import requests
 from bs4 import BeautifulSoup
-from collections import deque
 
 
-# 将题目和答案按一定格式保存到文件
-# :param question 问题列表
-# :param answer 答案列表
-# :param filename 保存题目的文件
-def record_exer(title, question, answer, filename):
-    with open(filename, 'w', encoding='utf-8') as f:
-        f.write('**********' + title + '\n')
-        for i in range(min(len(question), len(answer))):
-            f.write('题目%d: ' % i)
-            f.write(question[i] + '\n')
-            f.write('答案:\n')
-            f.write(answer[i] + '\n')
+# 解析页面page中的示例程序代码
+# 并将结果按一定格式写入文件filename
+def parse_example(page, filename):
+    print('parsing page:', page)
+    try:
+        resp = requests.get(page, headers=header_data, timeout=10)
+        resp.raise_for_status()
+    except Exception as e:
+        print('Exception occurs when parsing examples:')
+        print(e)
+        return
 
-        # 分隔符
-        f.write('*' * 40)
+    page_soup = BeautifulSoup(resp.content.decode('utf-8'), features='lxml')
+    exes = page_soup.find_all('pre', class_='prettyprint')
+    title = page_soup.title
+    # 如果没有找到示例程序，即exes为空列表，则直接返回
+    if len(exes) == 0:
+        print('page has no content!')
+        return
+
+    # 保存示例代码到文件
+    with open(filename, 'a', encoding='utf-8') as f:
+        f.write(('*' * 20) + title.string + ('*' * 20) + '\n')
+        for i, con in enumerate(exes):
+            f.write('Example {}:\n'.format(i + 1))
+            f.write(con.string)
+            f.write('\n' + ('*' * 30) + '\n')
         f.write('\n')
+    print('writing content to file {}'.format(filename))
 
 
 header_data = {
@@ -30,37 +43,26 @@ header_data = {
         AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 \
         Safari/537.36'
 }
-homepage = 'http://www.python3.vip/doc/prac/python/0001/'
-exe_prefix = 'http://www.python3.vip/doc/prac/python/'
-filename = 'assign4_exercise.txt'
+homepage = 'https://www.programcreek.com/python/index/37/json'
+filename = 'assign4_example.txt'
 
-visited = set()  # 链接去重
-links = deque()  # 待访问链接
-links.append(homepage)
+links = set()  # 保存待访问的链接，用集合去重
+try:
+    resp = requests.get(homepage, headers=header_data)
+    # 状态码不是200也抛出异常
+    resp.raise_for_status()
+except Exception as e:
+    print('Exception occurs: {}'.format(e))
+    os._exit(1)  # 程序退出
 
-while len(links) > 0:
-    lk = links.popleft()
-    if lk in visited:
-        continue
-    visited.add(lk)
-    print(lk)
+soup = BeautifulSoup(resp.content.decode('utf-8'), features='lxml')
+# 解析出示例页的链接
+lk = soup.find('ul', id='api-list').find_all('a', href=True)
+for i in lk:
+    links.add(i.attrs['href'])
 
-    try:
-        # 获取html页面
-        resp = requests.get(lk, headers=header_data, timeout=2)
-    except IOError:
-        continue
 
-    html = resp.content.decode('utf-8')
-    soup = BeautifulSoup(html, features='lxml')
-
-    # 记录所有习题页面
-    exes = soup('a', href=lambda x: exe_prefix in x)
-    exes = list(map(lambda x: x['href'], exes))
-    links.extend(exes)
-
-    title = soup.title.text
-    ques = list(map(lambda x: x.text, soup('div', class_='content')))
-    record_exer(title, ques, ques, filename)
-    print(ques)
-    break
+os.chdir('Homework/homework7')
+for page in links:
+    parse_example(page, filename)
+print('all done.')
