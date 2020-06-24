@@ -39,4 +39,4 @@ if __name__ == '__main__':
 
     session = Session()
     print(session.query(User).first().update_time)
-    # app.run(debug=True)
+    app.run(debug=True)
