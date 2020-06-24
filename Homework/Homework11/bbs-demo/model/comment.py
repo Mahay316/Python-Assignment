@@ -1,18 +1,15 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Text, text
 from sqlalchemy.dialects.mysql import BIT
-from sqlalchemy.orm import relationship
-from .database import Base
+
+from .database import Base, db
 
 
 class Comment(Base):
-    __tablename__ = 'comment'
+    comment_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey('user.user_id'), index=True)
+    message_id = db.Column(db.ForeignKey('message.message_id'), index=True)
+    content = db.Column(db.Text)
+    reply_to = db.Column(db.Integer, nullable=False)
+    hidden = db.Column(BIT(1), nullable=False)
 
-    comment_id = Column(Integer, primary_key=True)
-    user_id = Column(ForeignKey('user.user_id'), index=True)
-    message_id = Column(ForeignKey('message.message_id'), index=True)
-    content = Column(Text)
-    reply_to = Column(Integer, nullable=False)
-    hidden = Column(BIT(1), nullable=False)
-
-    message = relationship('Message')
-    user = relationship('User')
+    message = db.relationship('Message')
+    user = db.relationship('User')

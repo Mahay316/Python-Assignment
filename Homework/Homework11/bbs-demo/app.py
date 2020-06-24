@@ -1,8 +1,27 @@
-from flask import Flask, render_template, session, request, url_for, redirect
-from hashlib import md5
+from flask import Flask, render_template, session, request
+from controller import auth
+from model import User, init_db
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
+
+
+@app.before_request
+def auto_login():
+    """automated login using cookie"""
+    if session.get('isLogin') is None:
+        username = request.cookies.get('username')
+        password = request.cookies.get('password')
+        if username is not None and password is not None:
+            result = User.find_by_username(username)
+            if len(result) == 1 and password == result[0].password:
+                result = result[0]
+                # store login info
+                session['isLogin'] = 'true'
+                session['user_id'] = result.user_id
+                session['username'] = result.username
+                session['nickname'] = result.nickname
+                session['role'] = result.role
 
 
 @app.route('/')
@@ -13,30 +32,9 @@ def hello():
     # return 'please login' + session.get('username')
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-
-    if username == 'mahay' and password == md5(b'123').hexdigest():
-        session['isLogin'] = 'true'
-        session['username'] = 'test'
-        return 'success'
-    else:
-        return 'fail'
-
-
-@app.route('/logout')
-def logout():
-    # 注销后仍重定向到之前页面
-    from_url = request.args.get('from')
-    session.clear()
-    return redirect(from_url)
-
-
 if __name__ == '__main__':
-    from model import Session, User
+    app.app_context().push()
+    init_db(app)
 
-    session = Session()
-    print(session.query(User).first().update_time)
+    app.register_blueprint(auth)
     app.run(debug=True)

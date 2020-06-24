@@ -1,19 +1,18 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, text
-from sqlalchemy.dialects.mysql import BIT, MEDIUMTEXT, TINYINT
-from sqlalchemy.orm import relationship
-from .database import Base
+from sqlalchemy.dialects.mysql import BIT
+
+from .database import Base, db
 
 
 class Message(Base):
-    message_id = Column(Integer, primary_key=True)
-    user_id = Column(ForeignKey('user.user_id'), index=True)
-    type = Column(TINYINT, nullable=False)
-    headline = Column(String(100), nullable=False)
-    content = Column(MEDIUMTEXT)
-    read_count = Column(Integer, nullable=False, server_default=text("'0'"))
-    reply_count = Column(Integer, nullable=False, server_default=text("'0'"))
-    hidden = Column(BIT(1), nullable=False)
-    drafted = Column(BIT(1), nullable=False)
-    recommended = Column(BIT(1), nullable=False)
+    message_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey('user.user_id'), index=True)
+    type = db.Column(db.SMALLINT, nullable=False)
+    headline = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.TEXT)
+    read_count = db.Column(db.Integer, nullable=False, server_default=db.text("'0'"))
+    reply_count = db.Column(db.Integer, nullable=False, server_default=db.text("'0'"))
+    hidden = db.Column(BIT(1), nullable=False)
+    drafted = db.Column(BIT(1), nullable=False)
+    recommended = db.Column(BIT(1), nullable=False)
 
-    user = relationship('User')
+    user = db.relationship('User')

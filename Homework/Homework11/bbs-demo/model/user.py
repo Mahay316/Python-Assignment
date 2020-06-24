@@ -1,12 +1,23 @@
-from sqlalchemy import CHAR, Column, DateTime, Integer, String, text
-from .database import Base
+from .database import Base, db
 
 
 class User(Base):
-    user_id = Column(Integer, primary_key=True)
-    username = Column(String(50), nullable=False)
-    nickname = Column(String(50), nullable=False)
-    password = Column(CHAR(32))
-    avatar = Column(String(50), nullable=False, server_default=text("'default.png'"))
-    email = Column(String(50))
-    role = Column(String(10), nullable=False, server_default=text("'user'"))
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    nickname = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.CHAR(32))
+    avatar = db.Column(db.String(50), nullable=False, server_default=db.text("'default.png'"))
+    email = db.Column(db.String(50))
+    role = db.Column(db.String(10), nullable=False, server_default=db.text("'user'"))
+
+    @staticmethod
+    def find_by_username(username):
+        result = User.query.filter_by(username=username).all()
+        return result
+
+    @staticmethod
+    def do_register(username, nickname, password):
+        user = User(username=username, nickname=nickname, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return user

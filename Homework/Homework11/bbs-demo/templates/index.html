@@ -247,7 +247,8 @@
                     method: 'post',
                     data: {
                         'username': username,
-                        'password': password
+                        'password': password,
+                        'auto_login': $('#remember').prop('checked')
                     },
                     success: function (data) {
                         if (data === 'success') {
