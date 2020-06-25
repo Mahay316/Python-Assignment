@@ -205,25 +205,10 @@
                         </div>
                     </li>
                 </ul>
-                {% if session.get('isLogin') == 'true' %}
-                <button class="btn btn-success mr-3">发布留言</button>
-                <div id="loginCenter">
-                    <a href="#"><img class="rounded-circle avatar" src="/static/img/brand.jpg"/></a>
-                    <div class="userControl" style="display: none">
-                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
-                           target="_blank">反馈</a>
-                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
-                           target="_blank">访问Github</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:doLogout();">注销</a>
-                    </div>
-                </div>
-                {% else %}
                 <button class="btn btn-outline-success mr-3" data-toggle="modal"
                         data-target="#staticBackdrop">登录
                 </button>
                 <button class="btn btn-outline-dark" onclick="doRegister();">注册</button>
-                {% endif %}
             </div>
         </nav>
     </div>

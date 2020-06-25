@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, redirect
-from controller import auth
+from controller import auth, ueditor
 from model import User, init_db
 
 app = Flask(__name__)
@@ -29,7 +29,7 @@ def verify_login():
     print(request.path)
     """verify requests that need login"""
     # ignore pages don't need login
-    if request.path in ['/login', '/register']:
+    if request.path in ['/login', '/register', '/', '/index']:
         return None
     if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
         return redirect('/login?from=' + request.path)
@@ -46,14 +46,10 @@ def editor():
     return render_template('editor.html')
 
 
+@app.route('/')
 @app.route('/index')
 def hello():
     return render_template('index.html', article_count=3)
-
-
-@app.route('/')
-def login():
-    return render_template('login.html')
 
 
 if __name__ == '__main__':
@@ -61,4 +57,5 @@ if __name__ == '__main__':
     init_db(app)
 
     app.register_blueprint(auth)
+    app.register_blueprint(ueditor)
     app.run(debug=True)
