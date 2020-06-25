@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, redirect
-from controller import auth, ueditor
+from controller import auth, ueditor, message
 from model import User, init_db
 
 app = Flask(__name__)
@@ -36,11 +36,6 @@ def verify_login():
     return None
 
 
-@app.route('/msg')
-def message():
-    return render_template('message.html')
-
-
 @app.route('/editor')
 def editor():
     return render_template('editor.html')
@@ -58,4 +53,5 @@ if __name__ == '__main__':
 
     app.register_blueprint(auth)
     app.register_blueprint(ueditor)
+    app.register_blueprint(message)
     app.run(debug=True)
