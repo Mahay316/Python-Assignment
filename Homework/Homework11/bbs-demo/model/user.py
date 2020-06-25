@@ -16,8 +16,21 @@ class User(Base):
         return result
 
     @staticmethod
+    def find_by_id(user_id):
+        result = User.query.filter_by(user_id=user_id).all()
+        return result
+
+    @staticmethod
     def do_register(username, nickname, password):
         user = User(username=username, nickname=nickname, password=password)
         db.session.add(user)
         db.session.commit()
         return user
+
+    @staticmethod
+    def change_nickname(user_id, nickname):
+        """change user's nickname"""
+        result = User.query.filter_by(user_id=user_id).first()
+        result.nickname = nickname
+        db.session.commit()
+        return result

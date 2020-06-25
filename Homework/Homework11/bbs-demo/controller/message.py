@@ -21,7 +21,7 @@ def post_message():
         return 'invalid'
 
     try:
-        msg_id = Message.insert_message(msg_type, headline, content, drafted)
+        msg_id = Message.insert_message(session.get('user_id'), msg_type, headline, content, drafted)
         return str(msg_id)
     except IOError:
         return 'failed'

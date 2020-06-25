@@ -22,8 +22,9 @@ class Message(Base):
 
     @staticmethod
     def find_by_id(msg_id):
-        """find message record by message id"""
-        # format [(Message, nickname)]
+        """find message record by message id
+        format [(Message, nickname)]
+        """
         # only the author can find his/her hidden/drafted message
         result = db.session.query(Message, User.nickname).join(User, User.user_id == Message.user_id).filter(or_(and_(
             Message.hidden == 0, Message.drafted == 0), User.user_id == session.get('user_id')),
@@ -31,9 +32,19 @@ class Message(Base):
         return result
 
     @staticmethod
-    def insert_message(msg_type, headline, content, drafted=False):
+    def find_by_user(user_id):
+        """find messages published by user_id"""
+        result = Message.query.filter_by(user_id=user_id).all()
+        return result
+
+    @staticmethod
+    def count_user_message(user_id):
+        result = Message.query.filter_by(user_id=user_id).count()
+        return result
+
+    @staticmethod
+    def insert_message(user_id, msg_type, headline, content, drafted=False):
         """add a new message"""
-        user_id = session.get('user_id')
         msg = Message(user_id=user_id, type=msg_type, headline=headline,
                       content=content, drafted=drafted, )
         db.session.add(msg)

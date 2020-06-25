@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{"待填充"}}</title>
+    <link href="/static/img/brand.jpg" rel="SHORTCUT ICON">
+    <title>{{msg.headline}}</title>
 
     <link rel="stylesheet" href="/static/css/navigator.css"/>
 
@@ -11,6 +12,9 @@
 
     <script src="/static/js/jquery-3.5.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/static/js/userAuth.js"></script>
+    <script src="/static/js/accessory.js"></script>
     <style>
         .message-detail {
             padding: 15px;
@@ -231,7 +235,7 @@
         <div class="row col-9" style="margin: 10px 0 0 0;">
             <div class="col-12 message-detail">
                 <div class="col-12 title">
-                    How to build a Bulletin Board System
+                    {{msg.headline}}
                 </div>
                 <div class="col-12 info">
                     作者: {{nickname}}&nbsp;&nbsp;&nbsp;
@@ -363,8 +367,5 @@
         <p>A web application based on Flask.</p>
     </div>
 </footer>
-
-<script src="/static/js/userAuth.js"></script>
-<script src="/static/js/accessory.js"></script>
 </body>
 </html>
