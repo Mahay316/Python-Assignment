@@ -32,9 +32,9 @@ $(function () {
         inputPassword.popover('hide');
     });
 
-    // 登录按钮事件
+    // login button event listener
     loginBtn.click(function () {
-        //loginBtn.attr('disabled', true);
+        loginBtn.attr('disabled', true);
         loginBtn.popover('hide');
 
         // 数据校验
@@ -59,7 +59,7 @@ $(function () {
             return false;
         }
 
-        // 使用MD5加密密码
+        // encrypt password with MD5
         password = hex_md5(password);
         $.ajax({
             url: '/login',
@@ -99,7 +99,17 @@ $(function () {
     });
 });
 
-// 注销 from表示注销后需要重定向的地址
+// register, when complete go back to original page
+function doRegister() {
+    // prevent clicking register on register page
+    if (location.pathname === '/register') {
+        location.reload();
+    } else {
+        location.href = '/register?from=' + location.href;
+    }
+}
+
+// logout, when complete go back to original page
 function doLogout() {
     location.href = '/logout?from=' + location.href;
 }

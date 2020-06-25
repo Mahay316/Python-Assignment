@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BBS注册</title>
+
+    <!-- Bootstrap JQuery依赖 -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
+
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/bootbox.min.js"></script>
+
+    <!-- MD5依赖 -->
+    <script src="/static/js/md5.js"></script>
+
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <link rel="stylesheet" href="/static/css/popovers.css"/>
+    <script src="/static/js/userAuth.js"></script>
+    <style>
+        .title-line {
+            border-bottom: 1px solid #dddddd;
+            height: 28px;
+            margin: 25px 100px;
+            text-align: center;
+        }
+
+        .title-line .text {
+            padding: 0 10px;
+            background-color: #ffffff;
+            line-height: 56px;
+            font-size: 38px;
+        }
+
+        .register {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            // render by Jinja2
+            const from_url = '{{from_url}}';
+            const regUsername = $('#regUsername');
+            const regNickname = $('#regNickname');
+            const regPassword = $('#regPassword');
+            const verifyPassword = $('#verifyPassword');
+
+            // initialize register popover
+            regUsername.focus(function () {
+                regUsername.popover('hide');
+            });
+
+            regNickname.popover({
+                content: '昵称不能为空',
+                placement: 'right',
+                trigger: 'manual',
+            });
+            regNickname.focus(function () {
+                regNickname.popover('hide');
+            });
+
+            regPassword.popover({
+                content: '密码不能为空',
+                placement: 'right',
+                trigger: 'manual',
+            }); 
+            regPassword.focus(function () {
+                regPassword.popover('hide');
+            });
+
+            verifyPassword.popover({
+                content: '两次输入密码不相同',
+                placement: 'right',
+                trigger: 'manual',
+            });
+            verifyPassword.focus(function () {
+                verifyPassword.popover('hide');
+            });
+
+            const registerBtn = $('#registerBtn');
+
+            registerBtn.click(function () {
+                // prevent user's clicking multiple times
+                registerBtn.attr('disabled', true);
+
+                // data verification
+                let username = $.trim(regUsername.val());
+                if (username.length === 0) {
+                    registerBtn.removeAttr('disabled');
+                    regUsername.popover('dispose').popover({
+                        content: '用户名不能为空',
+                        placement: 'right',
+                        trigger: 'manual'
+                    });
+                    regUsername.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-right');
+                    return false;
+                }
+
+                let nickname = $.trim(regNickname.val());
+                if (nickname.length === 0) {
+                    registerBtn.removeAttr('disabled');
+                    regNickname.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-right');
+                    return false;
+                }
+
+                let password = $.trim(regPassword.val());
+                if (password.length === 0) {
+                    registerBtn.removeAttr('disabled');
+                    regPassword.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-right');
+                    return false;
+                }
+
+                let verPassword = $.trim(verifyPassword.val());
+                // two passwords don't match
+                if (password !== verPassword) {
+                    registerBtn.removeAttr('disabled');
+                    verifyPassword.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-right');
+                    return false;
+                }
+
+                // encrypt password with MD5
+                password = hex_md5(password);
+                $.ajax({
+                    url: '/register',
+                    method: 'post',
+                    data: {
+                        'username': username,
+                        'nickname': nickname,
+                        'password': password
+                    },
+                    success: function (data) {
+                        if (data === 'success') {
+                            bootbox.alert({
+                                title: '信息提示',
+                                message: '恭喜您，注册成功！<br/>将为您跳转...<br/>请输入刚注册信息登录',
+                                backdrop: true,
+                            });
+                            // 提示成功后刷新页面
+                            setTimeout(function () {
+                                location.href = from_url;
+                            }, 500);
+                        } else if (data === 'duplicated') {
+                            registerBtn.removeAttr('disabled');
+                            regUsername.popover('dispose').popover({
+                                content: '用户名重复',
+                                placement: 'right',
+                                trigger: 'manual'
+                            });
+                            regUsername.popover('show');
+                            $('.popover').addClass('popover-danger popover-danger-right');
+                        } else {
+                            registerBtn.removeAttr('disabled');
+                            bootbox.alert({
+                                title: '错误提示',
+                                message: '参数异常',
+                                size: 'small'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<!-- navigator -->
+<div class="menu bg-light shadow">
+    <div class="container" style="padding: 0;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-size: 16px">
+            <a class="navbar-brand brand" href="/">BBS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">查询</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">热议</a>
+                    </li>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            更多
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                               target="_blank">反馈</a>
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
+                               target="_blank">访问Github</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">关于</a>
+                        </div>
+                    </li>
+                </ul>
+                {% if session.get('isLogin') == 'true' %}
+                <button class="btn btn-success mr-3">发布留言</button>
+                <div id="loginCenter">
+                    <a href="#"><img class="rounded-circle avatar" src="/static/img/brand.jpg"/></a>
+                    <div class="userControl" style="display: none">
+                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                           target="_blank">反馈</a>
+                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
+                           target="_blank">访问Github</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:doLogout();">注销</a>
+                    </div>
+                </div>
+                {% else %}
+                <button class="btn btn-outline-success mr-3" data-toggle="modal"
+                        data-target="#staticBackdrop">登录
+                </button>
+                <button class="btn btn-outline-dark" onclick="doRegister();">注册</button>
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">登录</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="inputAccount">用户名</label>
+                        <input type="text" class="form-control" id="inputAccount" aria-describedby="emailHelp"
+                               placeholder="用户名或电子邮件">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">密码</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="remember">
+                        <label class="form-check-label" for="remember">记住我</label>
+                        <a href="#" style="float: right; padding-right: 10px">忘记密码?</a>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="loginBtn" class="btn btn-outline-success">登录</button>
+                <button type="button" class="btn btn-outline-dark" onclick="doRegister();">注册</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="title-line">
+    <span class="text">注册</span>
+</div>
+
+<div class="container" style="width: 500px">
+    <form>
+        <div class="form-group">
+            <label for="regUsername">用户名</label>
+            <input type="text" class="form-control" id="regUsername" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+            <label for="regNickname">昵称</label>
+            <input type="text" class="form-control" id="regNickname" placeholder="请输入昵称">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">密码</label>
+            <input type="password" class="form-control" id="regPassword" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+            <label for="verifyPassword">确认密码</label>
+            <input type="password" class="form-control" id="verifyPassword" placeholder="再输入一遍密码以确认">
+        </div>
+        <button type="submit" id="registerBtn" class="btn btn-primary col-12 register">注册</button>
+    </form>
+</div>
+
+<!-- footer -->
+<footer class="footer text-muted">
+    <div class="container-fluid p-4">
+        <div class="row">
+            <div class="col-1"><a href="https://github.com/Mahay316/Python-Assignment" target="_blank">Github</a></div>
+            <div class="col-1"><a href="#">About</a></div>
+            <div class="col-1"><a href="#">Documentation</a></div>
+        </div>
+        <p>Bulletin Board System designed by Mahay for Python assignment.</p>
+        <p>A web application based on Flask.</p>
+    </div>
+</footer>
+</body>
+</html>

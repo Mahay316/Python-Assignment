@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>BBS</title>
 
-    <link rel="stylesheet" href="/static/css/navigator.css"/>
-
     <!-- Bootstrap JQuery依赖 -->
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
 
@@ -15,41 +13,9 @@
     <!-- MD5依赖 -->
     <script src="/static/js/md5.js"></script>
 
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <link rel="stylesheet" href="/static/css/popovers.css"/>
     <style>
-        /*输入框错误状态提示的popover*/
-        .popover-danger {
-            background-color: #d9534f;
-            border-color: #d43f3a;
-            color: white !important;
-        }
-
-        .popover-danger-top .arrow:after {
-            border-top-color: #d9534f;
-        }
-
-        .popover-danger-left .arrow:after {
-            border-left-color: #d9534f;
-        }
-
-        .popover-danger .popover-body {
-            color: white !important;
-        }
-
-        /*输入框成功状态提示的popover*/
-        .popover-success {
-            background-color: #28a745;
-            border-color: #1d9539;
-            color: white !important;
-        }
-
-        .popover-success-left .arrow:after {
-            border-left-color: #28a745;
-        }
-
-        .popover-success .popover-body {
-            color: white !important;
-        }
-
         .section {
             padding: 0;
             margin: 10px 0;
@@ -168,7 +134,7 @@
                 <button class="btn btn-outline-success mr-3" data-toggle="modal"
                         data-target="#staticBackdrop">登录
                 </button>
-                <button class="btn btn-outline-dark">注册</button>
+                <button class="btn btn-outline-dark" onclick="doRegister();">注册</button>
                 {% endif %}
             </div>
         </nav>
@@ -206,7 +172,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="loginBtn" class="btn btn-outline-success">登录</button>
-                <button type="button" class="btn btn-outline-dark">注册</button>
+                <button type="button" class="btn btn-outline-dark" onclick="doRegister();">注册</button>
             </div>
         </div>
     </div>

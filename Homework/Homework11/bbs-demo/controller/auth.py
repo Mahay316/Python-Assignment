@@ -1,5 +1,5 @@
 # controller responsible for authentication and registration
-from flask import Blueprint, request, session, redirect, make_response
+from flask import Blueprint, request, session, redirect, make_response, render_template
 from model import User
 
 auth = Blueprint('auth', __name__, template_folder='../templates')
@@ -52,14 +52,23 @@ def logout():
     return resp
 
 
-@auth.route('/register', methods=['POST'])
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
+    # register page
+    if request.method == 'GET':
+        from_url = request.args.get('from')
+        if from_url is None:
+            from_url = '/'
+        return render_template('register.html', from_url=from_url)
+
+    # post request for registration
     username = request.form.get('username')
     nickname = request.form.get('nickname')
     password = request.form.get('password')
 
     # parameter not enough
-    if not (username and nickname and password):
+    # password must be encrypted with MD5
+    if not (username and nickname and password) or len(password) != 32:
         return 'invalid'
 
     # username already exists

@@ -24,7 +24,7 @@ def auto_login():
                 session['role'] = result.role
 
 
-@app.route('/')
+@app.route('/msg')
 def message():
     return render_template('message.html')
 
@@ -34,7 +34,7 @@ def editor():
     return render_template('editor.html')
 
 
-@app.route('/index')
+@app.route('/')
 def hello():
     return render_template('index.html', article_count=3)
 
