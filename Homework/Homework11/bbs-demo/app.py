@@ -24,16 +24,16 @@ def auto_login():
                 session['role'] = result.role
 
 
-@app.before_request
-def verify_login():
-    print(request.path)
-    """verify requests that need login"""
-    # ignore pages don't need login
-    if request.path in ['/login', '/register', '/', '/index']:
-        return None
-    if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
-        return redirect('/login?from=' + request.path)
-    return None
+# @app.before_request
+# def verify_login():
+#     print(request.path)
+#     """verify requests that need login"""
+#     # ignore pages don't need login
+#     if request.path in ['/login', '/register', '/', '/index']:
+#         return None
+#     if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
+#         return redirect('/login?from=' + request.path)
+#     return None
 
 
 @app.route('/editor')

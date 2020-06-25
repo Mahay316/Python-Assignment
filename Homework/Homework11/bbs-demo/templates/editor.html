@@ -119,8 +119,8 @@
                         type: msgType.val(),
                         headline: headline.val(),
                         // html element need to be encoded
-                        content: encodeURIComponent(ue.getContent()),
-                        drafted: drafted
+                        content: ue.getContent(),
+                        drafted: drafted ? 1 : 0
                     },
                     success: function (data) {
                         if (data === 'permission_denied') {

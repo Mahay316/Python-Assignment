@@ -1,4 +1,6 @@
 from flask import session
+from model import User
+from sqlalchemy import or_, and_
 from sqlalchemy.dialects.mysql import BIT
 
 from .database import Base, db
@@ -19,9 +21,13 @@ class Message(Base):
     user = db.relationship('User')
 
     @staticmethod
-    def find_message_by_id(msg_id):
+    def find_by_id(msg_id):
         """find message record by message id"""
-        result = Message.query.filter_by(message_id=msg_id).all()
+        # format [(Message, nickname)]
+        # only the author can find his/her hidden/drafted message
+        result = db.session.query(Message, User.nickname).join(User, User.user_id == Message.user_id).filter(or_(and_(
+            Message.hidden == 0, Message.drafted == 0), User.user_id == session.get('user_id')),
+            Message.message_id == msg_id).all()
         return result
 
     @staticmethod
@@ -29,7 +35,7 @@ class Message(Base):
         """add a new message"""
         user_id = session.get('user_id')
         msg = Message(user_id=user_id, type=msg_type, headline=headline,
-                      content=content, drafted=drafted,)
+                      content=content, drafted=drafted, )
         db.session.add(msg)
         db.session.commit()
 
