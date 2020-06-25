@@ -41,6 +41,7 @@ def editor():
     return render_template('editor.html')
 
 
+@app.route('/')
 @app.route('/index')
 def hello():
     return render_template('index.html', article_count=3)

@@ -9,6 +9,7 @@
     <!-- Bootstrap JQuery依赖 -->
     <script src="/static/js/jquery-3.5.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/bootbox.min.js"></script>
 
     <link rel="stylesheet" href="/static/css/navigator.css"/>
     <link rel="stylesheet" href="/static/css/popovers.css"/>
@@ -48,16 +49,31 @@
 
             // change nickname
             saveBtn.click(function () {
-                $(this).attr('disabled', true);
+                saveBtn.attr('disabled', true);
                 if ($.trim(nickname.val()).length === 0) {
+                    saveBtn.removeAttr('disabled');
                     nickname.popover('show');
                     $('.popover').addClass('popover-danger popover-danger-top');
                     return false;
                 }
 
-                $.ajax(
-                    
-                )
+                $.ajax({
+                    url: '/profile',
+                    method: 'put',
+                    data: {
+                        nickname: $.trim(nickname.val())
+                    },
+                    success: function (data) {
+                        if (data === 'success') {
+                            bootbox.alert({
+                                title: '信息提示',
+                                message: '昵称修改成功',
+                                backdrop: true
+                            });
+                            setTimeout('location.reload();', 1000);
+                        }
+                    }
+                });
             });
         });
     </script>
@@ -102,7 +118,7 @@
 
                 <button class="btn btn-success mr-3" onclick="location.href='/editor';">发布留言</button>
                 <div id="loginCenter">
-                    <a href="#"><img class="rounded-circle avatar" src="/static/img/brand.jpg"/></a>
+                    <a href="#"><img class="rounded-circle avatar" src="/static/img/{{user.avatar}}"/></a>
                     <div class="userControl" style="display: none">
                         <a class="dropdown-item" href="/profile"
                            target="_blank">个人中心</a>
@@ -121,7 +137,7 @@
     <div class="row">
         <div class="col-2" style="text-align: center">
             <div class="col-12">
-                <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
+                <img class="rounded-circle avatar" src="/static/img/{{user.avatar}}"/>
             </div>
             <a class="col-12" href="#">修改头像</a>
         </div>
