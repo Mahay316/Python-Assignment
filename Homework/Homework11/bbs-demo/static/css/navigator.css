@@ -1,0 +1,48 @@
+/* 顶部导航栏 */
+.menu {
+    margin-bottom: 15px;
+}
+
+.menu .avatar {
+    width: 36px;
+    height: 36px;
+}
+
+.menu .userControl {
+    position: absolute;
+    top: 80%;
+    right: 0;
+    z-index: 99999;
+    padding: 5px;
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, .15);
+}
+
+.brand {
+    font-size: 22px;
+    font-style: italic;
+    font-weight: 600;
+}
+
+/*页尾*/
+.footer {
+    background-color: #f7f7f7;
+    padding: 20px 30px;
+    margin-top: 20px;
+}
+
+.footer .row {
+    margin-bottom: 10px;
+}
+
+.footer a {
+    color: #6c757d;
+    font-style: oblique;
+    font-weight: 600;
+}
+
+.footer p {
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+}

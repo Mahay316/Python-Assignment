@@ -25,11 +25,18 @@ def auto_login():
 
 
 @app.route('/')
+def message():
+    return render_template('message.html')
+
+
+@app.route('/editor')
+def editor():
+    return render_template('editor.html')
+
+
+@app.route('/index')
 def hello():
-    # if session.get('username'):
     return render_template('index.html', article_count=3)
-    # else:
-    # return 'please login' + session.get('username')
 
 
 if __name__ == '__main__':

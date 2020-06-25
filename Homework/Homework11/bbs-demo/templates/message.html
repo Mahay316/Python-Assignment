@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{"待填充"}}</title>
+
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+
+    <!-- Bootstrap JQuery依赖 -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
+
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .message-detail {
+            padding: 15px;
+            border: 2px solid rgba(221, 221, 221, 0.7);
+            background-color: #f8f9fa;
+            box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .message-detail .title {
+            padding: 5px 15px;
+            color: orange;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .message-detail .info {
+            font-size: 14px;
+            border-bottom: 1px solid #cccccc;
+            line-height: 25px;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comment {
+            margin: 20px 0 0 0;
+            padding: 20px 20px 5px 20px;
+            border: 2px solid rgba(221, 221, 221, 0.7);
+            background-color: #f8f9fa;
+            box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .comment .avatar {
+            width: 48px;
+            height: 48px;
+        }
+
+        .comment .textarea-container textarea {
+            font-size: 12px;
+            display: inline-block;
+            box-sizing: border-box;
+            background-color: #f4f5f7;
+            border: 1px solid #e5e9ef;
+            overflow: auto;
+            border-radius: 4px;
+            color: #555;
+            width: 100% !important;
+            height: 65px;
+            transition: 0s;
+            padding: 5px 10px;
+            line-height: normal;
+            resize: none;
+        }
+
+        .comment .textarea-container .comment-submit {
+            font-size: 16px;
+            color: #ffffff;
+            padding: 16px 5px;
+            border-radius: 4px;
+            text-align: center;
+            min-width: 60px;
+            vertical-align: top;
+            cursor: pointer;
+            transition: .1s;
+            user-select: none;
+            outline: none;
+        }
+
+        .comment-real {
+            text-align: left;
+            margin: 0 0 15px 0;
+            padding-left: 6px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dedede;
+        }
+
+        .comment-real .comment-box {
+            padding: 0;
+        }
+
+        .comment-real .comment-name {
+            font-size: 14px;
+            color: #6d757a;
+            font-weight: 700;
+        }
+
+        .comment-real .comment-info {
+            color: #99a2aa;
+            font-size: 14px;
+        }
+
+        .comment-real .text {
+            line-height: 20px;
+            padding: 2px 0;
+            font-size: 14px;
+            text-shadow: none;
+            overflow: hidden;
+            word-break: break-all;
+        }
+
+        .reply-box {
+            margin: 0;
+            padding: 0;
+        }
+
+        .reply-box .reply-item {
+            padding: 10px 15px;
+            margin: 0px;
+        }
+
+        .reply-box .reply-item .avatar {
+            width: 32px;
+            height: 32px;
+        }
+    </style>
+</head>
+<body>
+<!-- navigator -->
+<div class="menu bg-light shadow">
+    <div class="container" style="padding: 0;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-size: 16px">
+            <a class="navbar-brand brand" href="/">BBS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">查询</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">热议</a>
+                    </li>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            更多
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                               target="_blank">反馈</a>
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
+                               target="_blank">访问Github</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">关于</a>
+                        </div>
+                    </li>
+                </ul>
+                {% if session.get('isLogin') == 'true' %}
+                <button class="btn btn-success mr-3">发布留言</button>
+                <div id="loginCenter">
+                    <a href="#"><img class="rounded-circle avatar" src="/static/img/brand.jpg"/></a>
+                    <div class="userControl" style="display: none">
+                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                           target="_blank">反馈</a>
+                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
+                           target="_blank">访问Github</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:doLogout();">注销</a>
+                    </div>
+                </div>
+                {% else %}
+                <button class="btn btn-outline-success mr-3" data-toggle="modal"
+                        data-target="#staticBackdrop">登录
+                </button>
+                <button class="btn btn-outline-dark">注册</button>
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- content -->
+<div class="container" style="border: 0px solid red">
+    <div class="row" style="border: 0px solid blue">
+        <div class="row col-9" style="margin: 10px 0 0 0;">
+            <div class="col-12 message-detail">
+                <div class="col-12 title">
+                    How to build a Bulletin Board System
+                </div>
+                <div class="col-12 info">
+                    作者: Mahay&nbsp;&nbsp;&nbsp;
+                    日期: 2020-06-11 21:02:56&nbsp;&nbsp;&nbsp;
+                    阅读数: 100&nbsp;&nbsp;&nbsp;
+                    回复数: 100
+                </div>
+                <div class="col-12 content">
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/><br/><br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/><br/><br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/><br/><br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/><br/><br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                    中文测试<br/>
+                    Englist Test<br/>
+                </div>
+            </div>
+            <!-- comments -->
+            <div class="row col-12 comment" style="text-align: center">
+                <div class="col-1" style="padding: 0;">
+                    <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
+                </div>
+                <div class="row col-11 textarea-container">
+                    <textarea class="col-10" placeholder="请发表文明言论"></textarea>
+                    <button class="col-2 btn btn-primary comment-submit">发表评论</button>
+                </div>
+                <div class="col-11" style="margin: 15px 20px 10px 20px; border-bottom: 1px solid #cccccc;"></div>
+
+                <!-- one piece of comment -->
+                <div class="row col-12 comment-real">
+                    <div class="col-1" style="padding: 0;">
+                        <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
+                    </div>
+                    <div class="row col-11 comment-box">
+                        <div class="col-12 comment-name">Mahay</div>
+                        <div class="col-12 comment-content">
+                            <p class="text">评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试</p>
+                        </div>
+                        <div class="col-12 comment-info">2020-6-25&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="#" class="comment-info">回复</a>
+                        </div>
+                        <div class="col-12 reply-box">
+                            <div class="row reply-item">
+                                <a class="col-1" style="padding: 0;" href="#">
+                                    <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
+                                </a>
+                                <div class="col-11" style="padding: 0; margin-bottom: 10px;">
+                                    <span class="comment-name">Mahay&nbsp;</span>
+                                    <span class="text">MahayMahayMahayMahayMahayMahayMahayMahMahayMahayMahayayMahayMahayMahayMahayMahayMahay</span>
+                                </div>
+                                <div class="col-1" style="visibility: hidden;"></div>
+                                <div class="col-11 comment-info" style="padding: 0">2020-6-25&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="#" class="comment-info">回复</a>
+                                </div>
+                            </div>
+                            <div class="row reply-item">
+                                <a class="col-1" style="padding: 0;" href="#">
+                                    <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
+                                </a>
+                                <div class="col-11" style="padding: 0; margin-bottom: 10px;">
+                                    <span class="comment-name">Mahay&nbsp;</span>
+                                    <span class="text">MahayMahayMahayMahayMahayMahayMahayMahMahayMahayMahayayMahayMahayMahayMahayMahayMahay</span>
+                                </div>
+                                <div class="col-1" style="visibility: hidden;"></div>
+                                <div class="col-11 comment-info" style="padding: 0">2020-6-25&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a href="#" class="comment-info">回复</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3" style="padding-left: 15px">
+            <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
+                <a href="#" class="list-group-item list-group-item-action active text-center">
+                    新注册用户
+                </a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+            </div>
+            <div class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
+                <a href="#" class="list-group-item list-group-item-action active text-center">
+                    留言分类
+                </a>
+                <ul class="list-group list-group-horizontal">
+                    <li class="col-6 list-group-item">编程语言</li>
+                    <li class="col-6 list-group-item">编程语言</li>
+                </ul>
+                <ul class="list-group list-group-horizontal">
+                    <li class="col-6 list-group-item">编程语言</li>
+                    <li class="col-6 list-group-item">编程语言</li>
+                </ul>
+                <ul class="list-group list-group-horizontal">
+                    <li class="col-6 list-group-item">编程语言</li>
+                    <li class="col-6 list-group-item">编程语言</li>
+                </ul>
+
+                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
+                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
+                <a href="#" class="list-group-item list-group-item-action active text-center"
+                   onclick="scrollToTop()">
+                    <svg class="bi bi-arrow-up-left-circle-fill text-light" width="1em" height="1em"
+                         viewBox="0 0 16 16"
+                         fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                         style="margin-bottom: 3px; margin-left: -3px;">
+                        <path fill-rule="evenodd"
+                              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM9.5 5h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0V6.707l4.146 4.147a.5.5 0 0 0 .708-.708L6.707 6H9.5a.5.5 0 0 0 0-1z"/>
+                    </svg>
+                    回到顶部
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- footer -->
+<footer class="footer text-muted">
+    <div class="container-fluid p-4">
+        <div class="row">
+            <div class="col-1"><a href="https://github.com/Mahay316/Python-Assignment" target="_blank">Github</a></div>
+            <div class="col-1"><a href="#">About</a></div>
+            <div class="col-1"><a href="#">Documentation</a></div>
+        </div>
+        <p>Bulletin Board System designed by Mahay for Python assignment.</p>
+        <p>A web application based on Flask.</p>
+    </div>
+</footer>
+
+<script src="/static/js/userAuth.js"></script>
+<script src="/static/js/accessory.js"></script>
+</body>
+</html>
