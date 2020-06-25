@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, session, request, redirect
 from controller import auth
 from model import User, init_db
 
@@ -24,6 +24,18 @@ def auto_login():
                 session['role'] = result.role
 
 
+@app.before_request
+def verify_login():
+    print(request.path)
+    """verify requests that need login"""
+    # ignore pages don't need login
+    if request.path in ['/login', '/register']:
+        return None
+    if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
+        return redirect('/login?from=' + request.path)
+    return None
+
+
 @app.route('/msg')
 def message():
     return render_template('message.html')
@@ -34,9 +46,14 @@ def editor():
     return render_template('editor.html')
 
 
-@app.route('/')
+@app.route('/index')
 def hello():
     return render_template('index.html', article_count=3)
+
+
+@app.route('/')
+def login():
+    return render_template('login.html')
 
 
 if __name__ == '__main__':

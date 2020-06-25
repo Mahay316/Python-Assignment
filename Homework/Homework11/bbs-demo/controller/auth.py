@@ -5,8 +5,16 @@ from model import User
 auth = Blueprint('auth', __name__, template_folder='../templates')
 
 
-@auth.route('/login', methods=['POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
+    # login page
+    if request.method == 'GET':
+        from_url = request.args.get('from')
+        if from_url is None:
+            from_url = '/'
+        return render_template('login.html', from_url=from_url)
+
+    # post request for login
     username = request.form.get('username')
     password = request.form.get('password')
     auto_login = request.form.get('auto_login')

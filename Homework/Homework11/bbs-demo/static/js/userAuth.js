@@ -81,7 +81,15 @@ $(function () {
                     $('.popover').removeClass('popover-danger popover-danger-top')
                         .addClass('popover-success popover-success-left');
                     // 提示成功后刷新页面
-                    setTimeout('location.reload();', 500);
+                    setTimeout(function () {
+                        const from_url = $('#from');
+                        if (from_url.length > 0) {
+                            // redirect to original page when complete
+                            location.href = from_url.text();
+                        } else {
+                            location.reload();
+                        }
+                    }, 500);
                 } else {
                     loginBtn.removeAttr('disabled');
                     loginBtn.popover('dispose').popover({
