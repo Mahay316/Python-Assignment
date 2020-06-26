@@ -17,7 +17,7 @@ def index():
         msg_count.append(Message.count_msg_of_type(i))
         msgs.append(Message.find_top(i, 3))
     users = User.find_new(5)
-    return render_template('index.html', msgs=msgs, users=users, msg_type=type_map, msg_count=msg_count)
+    return render_template('index.html', msgs=msgs, users=users, type_map=type_map, msg_count=msg_count)
 
 
 @message.route('/message', methods=['POST'])
@@ -68,4 +68,6 @@ def get_msg_list(msg_type, page):
         abort(404)
 
     result = Message.find_limit_of_type(msg_type, page * 10, 10)
-    return render_template('message-list.html', result=result, msg_type=msg_type, curr_page=page, page_count=count)
+    users = User.find_new(5)
+    return render_template('message-list.html', result=result, users=users, msg_type=msg_type, type_map=type_map,
+                           curr_page=page, page_count=count)

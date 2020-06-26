@@ -195,41 +195,30 @@
         <div class="col-3" style="padding-left: 15px; border: 0px solid black">
             {% if result | length > 3 %}
             <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
-                <a href="#" class="list-group-item list-group-item-action active text-center">
+                <span href="#" class="list-group-item list-group-item-action active text-center">
                     新注册用户
+                </span>
+                {% for i in range(users | length) %}
+                <a href="#" class="list-group-item list-group-item-action text-center">
+                    <img class="rounded-circle"
+                         src="/static/img/{{users[i].avatar}}" height="32" width="32"/>
+                    {{users[i].nickname}}
                 </a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                {% endfor %}
             </div>
             {% endif %}
 
             <div class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
-                <a href="#" class="list-group-item list-group-item-action active text-center">
+                <span href="#" class="list-group-item list-group-item-action active text-center">
                     留言分类
-                </a>
-                <ul class="list-group list-group-horizontal">
-                    <li class="col-6 list-group-item">编程语言</li>
-                    <li class="col-6 list-group-item">编程语言</li>
-                </ul>
-                <ul class="list-group list-group-horizontal">
-                    <li class="col-6 list-group-item">编程语言</li>
-                    <li class="col-6 list-group-item">编程语言</li>
-                </ul>
-                <ul class="list-group list-group-horizontal">
-                    <li class="col-6 list-group-item">编程语言</li>
-                    <li class="col-6 list-group-item">编程语言</li>
-                </ul>
+                </span>
 
-                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
-                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
+                {% for i in range(type_map | length) %}
+                <a href="/message/list/{{i}}-0" class="list-group-item list-group-item-action text-center">
+                    {{type_map[i]}}
+                </a>
+                {% endfor %}
+
                 <a href="#" class="list-group-item list-group-item-action active text-center"
                    onclick="scrollToTop()">
                     <svg class="bi bi-arrow-up-left-circle-fill text-light" width="1em" height="1em"

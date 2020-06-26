@@ -179,9 +179,9 @@
                     留言分类
                 </span>
 
-                {% for i in range(msg_type | length) %}
+                {% for i in range(type_map | length) %}
                 <a href="/message/list/{{i}}-0" class="list-group-item list-group-item-action text-center">
-                    {{msg_type[i]}}
+                    {{type_map[i]}}
                 </a>
                 {% endfor %}
 
