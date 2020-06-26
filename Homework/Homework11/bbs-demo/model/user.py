@@ -21,6 +21,12 @@ class User(Base):
         return result
 
     @staticmethod
+    def find_new(length):
+        """return the first length newest user"""
+        result = User.query.order_by(User.user_id.desc()).limit(5).all()
+        return result
+
+    @staticmethod
     def do_register(username, nickname, password):
         user = User(username=username, nickname=nickname, password=password)
         db.session.add(user)

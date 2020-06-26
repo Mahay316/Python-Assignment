@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <title>文章发布</title>
 
-    <link rel="stylesheet" href="/static/css/navigator.css"/>
-
     <!-- Bootstrap JQuery依赖 -->
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
 
     <script src="/static/js/jquery-3.5.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/bootbox.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <script src="/static/js/userAuth.js"></script>
 
     <!-- UEditor 依赖 -->
     <script type="text/javascript" src="/static/ueditor/ueditor.config.js"></script>
@@ -256,9 +257,9 @@
                 <div class="form-row align-items-center" style="margin: 0;">
                     <select class="col custom-select" id="messageType">
                         <option value="-1" selected>文章类型</option>
-                        <option value="0">One</option>
-                        <option value="1">Two</option>
-                        <option value="2">Three</option>
+                        {% for i in range(msg_type | length) %}
+                        <option value="{{i}}">{{msg_type[i]}}</option>
+                        {% endfor %}
                     </select>
                     <div class="col my-1" style="text-align: right">
                         <button id="saveDraft" class="btn btn-outline-info mr-3">存为草稿</button>
@@ -283,7 +284,5 @@
         <p>A web application based on Flask.</p>
     </div>
 </footer>
-
-<script src="/static/js/userAuth.js"></script>
 </body>
 </html>

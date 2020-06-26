@@ -3,7 +3,7 @@ from common import save_session
 from flask import Blueprint, request, session, redirect, make_response, render_template
 from model import User, Message
 
-auth = Blueprint('auth', __name__, template_folder='../templates')
+auth = Blueprint('auth', __name__, template_folder='templates')
 
 
 @auth.route('/login', methods=['GET', 'POST'])

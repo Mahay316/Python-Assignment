@@ -1,16 +1,23 @@
 # controller responsible for posting/updating/deleting message
 from math import ceil
 
-from common import type_to_str, type_map
+from common import type_map
 from flask import Blueprint, request, session, render_template, abort
-from model import Message
+from model import Message, User
 
 message = Blueprint('message', __name__, template_folder='templates')
 
 
-@message.route('/editor')
-def editor():
-    return render_template('editor.html')
+@message.route('/')
+@message.route('/index')
+def index():
+    msg_count = []
+    msgs = []
+    for i in range(len(type_map)):
+        msg_count.append(Message.count_msg_of_type(i))
+        msgs.append(Message.find_top(i, 3))
+    users = User.find_new(5)
+    return render_template('index.html', msgs=msgs, users=users, msg_type=type_map, msg_count=msg_count)
 
 
 @message.route('/message', methods=['POST'])
@@ -50,16 +57,15 @@ def get_msg(msg_id):
     # increase message's read count by 1
     Message.increase_read_count(msg_id)
     result = result[0]
-    return render_template('message-detail.html', msg=result[0], nickname=result[1],
-                           msg_type=type_to_str(result[0].type))
+    return render_template('message-detail.html', msg=result[0], nickname=result[1])
 
 
 @message.route('/message/list/<int:msg_type>-<int:page>')
 def get_msg_list(msg_type, page):
     """get paginated message list"""
     count = ceil(Message.count_msg_of_type(msg_type) / 10)
-    if msg_type > len(type_map) or page > count:  # request a nonexistent page
+    if msg_type >= len(type_map) or page >= count:  # request a nonexistent page
         abort(404)
 
-    result = Message.find_limit_of_type(msg_type, (page - 1) * 10, 10)
+    result = Message.find_limit_of_type(msg_type, page * 10, 10)
     return render_template('message-list.html', result=result, msg_type=msg_type, curr_page=page, page_count=count)

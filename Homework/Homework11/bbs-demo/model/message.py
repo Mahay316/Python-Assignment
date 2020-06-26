@@ -1,3 +1,4 @@
+from common import type_map
 from flask import session
 from model import User
 from sqlalchemy import or_, and_
@@ -86,4 +87,12 @@ class Message(Base):
     def count_msg_of_type(msg_type):
         """return number of messages of certain type"""
         result = Message.query.filter_by(type=msg_type).count()
+        return result
+
+    @staticmethod
+    def find_top(msg_type, length):
+        """return the first length messages of msg_type sorted by reply_count"""
+        result = db.session.query(Message, User.nickname, User.avatar) \
+            .join(User, User.user_id == Message.user_id).filter(Message.type == msg_type) \
+            .order_by(Message.reply_count.desc()).limit(length).all()
         return result

@@ -1,7 +1,13 @@
 # controller responsible for responding and configuring UEditor
+from common import type_map
 from flask import Blueprint, request, render_template, jsonify, session
 
 ueditor = Blueprint('ueditor', __name__, template_folder='../templates')
+
+
+@ueditor.route('/editor')
+def editor():
+    return render_template('editor.html', msg_type=type_map)
 
 
 @ueditor.route('/uedit', methods=['GET', 'POST'])

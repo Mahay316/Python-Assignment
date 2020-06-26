@@ -1,6 +1,6 @@
 /* stylesheet for message list on home page and categorized message page */
 .section {
-    padding: 0;
+    padding: 0 10px 5px 10px;
     margin: 10px 0;
     border: 2px solid rgba(221, 221, 221, 0.7);
     background-color: #f8f9fa;
@@ -23,8 +23,10 @@
 
 .section .section-title {
     font-size: 32px;
-    display: inline-block;
+    /*display: inline-block;*/
     color: #6c757d;
+    background: #f8f9fa;
+    border-width: 0;
     font-weight: 600;
     /*margin-top: 20px;*/
     cursor: pointer;
@@ -36,6 +38,7 @@
     /*border-bottom: 2px dashed #cccccc;*/
     background-color: #f8f9fa;
     margin: 0 10px 5px 10px;
+    min-height: 160px;
 }
 
 .msg-list .avatar {
@@ -45,16 +48,24 @@
 }
 
 .msg-list .detail .title {
-    font-size: 22px;
-    margin-bottom: 10px;
+    margin: 10px 0;
+}
+
+.msg-list .detail .title a {
+    font-size: 20px;
+    margin: 10px 0;
+    color: orange;
+    font-weight: 600;
 }
 
 .msg-list .detail .info {
     font-size: 14px;
     margin-bottom: 10px;
+    color: #71777d;
 }
 
 .msg-list .detail .intro {
     font-size: 16px;
     line-height: 25px;
+    color: #292b2d;
 }

@@ -127,158 +127,64 @@
 <div class="container" style="border: 0px solid red">
     <div class="row" style="border: 0px solid blue">
         <div class="row col-9" style="margin: 0;">
+            {% for i in range(msg_type | length) %}
             <div class="col-12 section">
-                <div class="col-12" style="text-align: center; margin: 10px 0;">
-                    <em>999+</em>
-                    <span class="section-title">编程语言</span>
+                <div class="d-flex col-12 justify-content-center">
+                    <button type="button" class="btn btn-light p-3 section-title"
+                            onclick="location.href='/message/list/{{i}}-0';">
+                        {{msg_type[i]}}
+                        {% if msg_count[i] > 999 %}
+                        <span class="badge badge-danger" style="min-width: 78px;">999+</span>
+                        {% else %}
+                        <span class="badge badge-primary" style="min-width: 78px;">{{msg_count[i]}}</span>
+                        {% endif %}
+                    </button>
                 </div>
-                {% for i in range(article_count) %}
+                {% for j in range(msgs[i] | length) %}
+                {% set tmp = msgs[i][j] %}
                 <div class="row msg-list">
                     <div class="col-1" style="padding: 0;">
-                        <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
+                        <img class="rounded-circle avatar" src="/static/img/{{tmp[2]}}"/>
                     </div>
                     <div class="col-11 detail">
-                        <div class="title"><a href="#">How to build a Bulletin Board System</a></div>
+                        <div class="title"><a href="/message/detail/{{tmp[0].message_id}}">{{tmp[0].headline}}</a></div>
                         <div class="info">
-                            作者: Mahay&nbsp;&nbsp;&nbsp;
-                            日期: 2020-06-11 21:02:56&nbsp;&nbsp;&nbsp;
-                            阅读数: 100&nbsp;&nbsp;&nbsp;
-                            回复数: 100
+                            作者: {{tmp[1]}}&nbsp;&nbsp;&nbsp;
+                            日期: {{tmp[0].create_time}}&nbsp;&nbsp;&nbsp;
+                            阅读数: {{tmp[0].read_count}}&nbsp;&nbsp;&nbsp;
+                            回复数: {{tmp[0].reply_count}}
                         </div>
-                        <div class="intro">Get started with Bootstrap, the world’s most popular framework for building
-                            responsive,
-                            mobile-first sites, with BootstrapCDN and a template starter page. Curious which components
-                            explicitly
-                            require jQuery, our JS, and Popper.js? Click the show components link below. If you’re at
-                            ...
-                        </div>
+                        <div class="intro">{{get_summary(tmp[0].content, 100)}}...</div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            <div class="col-12 section">
-                <div class="col-12" style="text-align: center;">
-                    <em>999+</em>
-                    <span class="section-title">编程语言</span>
-                </div>
-                {% for i in range(article_count) %}
-                <div class="row msg-list">
-                    <div class="col-1" style="padding: 0;">
-                        <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
-                    </div>
-                    <div class="col-11 detail">
-                        <div class="title"><a href="#">How to build a Bulletin Board System</a></div>
-                        <div class="info">
-                            作者: Mahay&nbsp;&nbsp;&nbsp;
-                            日期: 2020-06-11 21:02:56&nbsp;&nbsp;&nbsp;
-                            阅读数: 100&nbsp;&nbsp;&nbsp;
-                            回复数: 100
-                        </div>
-                        <div class="intro">Get started with Bootstrap, the world’s most popular framework for building
-                            responsive,
-                            mobile-first sites, with BootstrapCDN and a template starter page. Curious which components
-                            explicitly
-                            require jQuery, our JS, and Popper.js? Click the show components link below. If you’re at
-                            ...
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class="col-12 section">
-                <div class="col-12" style="text-align: center;">
-                    <em>999+</em>
-                    <span class="section-title">编程语言</span>
-                </div>
-                {% for i in range(article_count) %}
-                <div class="row msg-list">
-                    <div class="col-1" style="padding: 0;">
-                        <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
-                    </div>
-                    <div class="col-11 detail">
-                        <div class="title"><a href="#">How to build a Bulletin Board System</a></div>
-                        <div class="info">
-                            作者: Mahay&nbsp;&nbsp;&nbsp;
-                            日期: 2020-06-11 21:02:56&nbsp;&nbsp;&nbsp;
-                            阅读数: 100&nbsp;&nbsp;&nbsp;
-                            回复数: 100
-                        </div>
-                        <div class="intro">Get started with Bootstrap, the world’s most popular framework for building
-                            responsive,
-                            mobile-first sites, with BootstrapCDN and a template starter page. Curious which components
-                            explicitly
-                            require jQuery, our JS, and Popper.js? Click the show components link below. If you’re at
-                            ...
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class="col-12 section">
-                <div class="col-12" style="text-align: center;">
-                    <em>999+</em>
-                    <span class="section-title">编程语言</span>
-                </div>
-                {% for i in range(article_count) %}
-                <div class="row msg-list">
-                    <div class="col-1" style="padding: 0;">
-                        <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
-                    </div>
-                    <div class="col-11 detail">
-                        <div class="title"><a href="#">How to build a Bulletin Board System</a></div>
-                        <div class="info">
-                            作者: Mahay&nbsp;&nbsp;&nbsp;
-                            日期: 2020-06-11 21:02:56&nbsp;&nbsp;&nbsp;
-                            阅读数: 100&nbsp;&nbsp;&nbsp;
-                            回复数: 100
-                        </div>
-                        <div class="intro">Get started with Bootstrap, the world’s most popular framework for building
-                            responsive,
-                            mobile-first sites, with BootstrapCDN and a template starter page. Curious which components
-                            explicitly
-                            require jQuery, our JS, and Popper.js? Click the show components link below. If you’re at
-                            ...
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
         </div>
         <div class="col-3" style="padding-left: 15px; border: 0px solid black">
             <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
-                <a href="#" class="list-group-item list-group-item-action active text-center">
+                <span href="#" class="list-group-item list-group-item-action active text-center">
                     新注册用户
+                </span>
+                {% for i in range(users | length) %}
+                <a href="#" class="list-group-item list-group-item-action text-center">
+                    <img class="rounded-circle"
+                         src="/static/img/{{users[i].avatar}}" height="32" width="32"/>
+                    {{users[i].nickname}}
                 </a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
-                <a href="#" class="list-group-item list-group-item-action text-center"><img
-                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                {% endfor %}
             </div>
             <div class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
-                <a href="#" class="list-group-item list-group-item-action active text-center">
+                <span href="#" class="list-group-item list-group-item-action active text-center">
                     留言分类
-                </a>
-                <ul class="list-group list-group-horizontal">
-                    <li class="col-6 list-group-item">编程语言</li>
-                    <li class="col-6 list-group-item">编程语言</li>
-                </ul>
-                <ul class="list-group list-group-horizontal">
-                    <li class="col-6 list-group-item">编程语言</li>
-                    <li class="col-6 list-group-item">编程语言</li>
-                </ul>
-                <ul class="list-group list-group-horizontal">
-                    <li class="col-6 list-group-item">编程语言</li>
-                    <li class="col-6 list-group-item">编程语言</li>
-                </ul>
+                </span>
 
-                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
-                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
+                {% for i in range(msg_type | length) %}
+                <a href="/message/list/{{i}}-0" class="list-group-item list-group-item-action text-center">
+                    {{msg_type[i]}}
+                </a>
+                {% endfor %}
+
                 <a href="#" class="list-group-item list-group-item-action active text-center"
                    onclick="scrollToTop()">
                     <svg class="bi bi-arrow-up-left-circle-fill text-light" width="1em" height="1em"

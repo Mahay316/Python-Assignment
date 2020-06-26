@@ -128,7 +128,7 @@
         <div class="row col-9" style="margin: 0;">
             <div class="col-12 section">
                 {% for i in range(result | length) %}
-                <div class="row msg-list">
+                <div class="row msg-list" {% if i == 0 %}style="border-top-width: 0;"{% endif %}>
                     <div class="col-1" style="padding: 0;">
                         <img class="rounded-circle avatar" src="/static/img/{{result[i][2]}}"/>
                     </div>
@@ -142,13 +142,7 @@
                             阅读数: {{result[i][0].read_count}}&nbsp;&nbsp;&nbsp;
                             回复数: {{result[i][0].reply_count}}
                         </div>
-                        <div class="intro">Get started with Bootstrap, the world’s most popular framework for building
-                            responsive,
-                            mobile-first sites, with BootstrapCDN and a template starter page. Curious which components
-                            explicitly
-                            require jQuery, our JS, and Popper.js? Click the show components link below. If you’re at
-                            ...
-                        </div>
+                        <div class="intro">{{get_summary(result[i][0].content, 100)}}...</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -157,7 +151,7 @@
             <div class="d-flex justify-content-center col-12 section align-content-center">
                 <nav class="page-num">
                     <ul class="pagination" style="margin: 0;">
-                        <li class="page-item {% if curr_page <= 1 %}disabled{% endif %}">
+                        <li class="page-item {% if curr_page <= 0 %}disabled{% endif %}">
                             <a class="page-link" href="/message/list/{{msg_type}}-{{curr_page - 1}}"
                                aria-label="Previous">
                                 <span>&laquo;</span>
@@ -166,30 +160,30 @@
 
                         <!-- 超出12页将隐藏中间页码 -->
                         {% if page_count > 12 %}
-                            {% for i in range(6) %}
-                            <li class="page-item">
-                                <a class="page-link" href="/message/list/{{msg_type}}-{{i + 1}}">{{i + 1}}</a>
-                            </li>
-                            {% endfor %}
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#">...</a>
-                            </li>
-                            {% for i in range(page_count - 6, page_count) %}
-                            <li class="page-item">
-                                <a class="page-link" href="/message/list/{{msg_type}}-{{i + 1}}">{{i + 1}}</a>
-                            </li>
-                            {% endfor %}
+                        {% for i in range(6) %}
+                        <li class="page-item">
+                            <a class="page-link" href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                        {% for i in range(page_count - 6, page_count) %}
+                        <li class="page-item">
+                            <a class="page-link" href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
+                        </li>
+                        {% endfor %}
 
                         {% else %}
 
-                            {% for i in range(page_count) %}
-                            <li class="page-item">
-                                <a class="page-link" href="/message/list/{{msg_type}}-{{i + 1}}">{{i + 1}}</a>
-                            </li>
-                            {% endfor %}
+                        {% for i in range(page_count) %}
+                        <li class="page-item">
+                            <a class="page-link" href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
+                        </li>
+                        {% endfor %}
                         {% endif %}
 
-                        <li class="page-item {% if curr_page >= page_count %}disabled{% endif %}">
+                        <li class="page-item {% if curr_page >= page_count - 1 %}disabled{% endif %}">
                             <a class="page-link" href="/message/list/{{msg_type}}-{{curr_page + 1}}" aria-label="Next">
                                 <span>&raquo;</span>
                             </a>
@@ -199,7 +193,7 @@
             </div>
         </div>
         <div class="col-3" style="padding-left: 15px; border: 0px solid black">
-            {% if result | length > 4 %}
+            {% if result | length > 3 %}
             <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
                 <a href="#" class="list-group-item list-group-item-action active text-center">
                     新注册用户

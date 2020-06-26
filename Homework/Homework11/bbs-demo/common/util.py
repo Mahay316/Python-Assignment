@@ -1,6 +1,9 @@
+import re
+
 from flask import session
 
-type_map = ['编程语言', '编程语言', '编程语言']
+type_map = ['编程语言', '学习交流', '影视文学',
+            '电子竞技', '体育运动', '日常闲聊']
 
 
 def type_to_str(msg_type):
@@ -16,3 +19,10 @@ def save_session(user):
     session['nickname'] = user.nickname
     session['avatar'] = user.avatar
     session['role'] = user.role
+
+
+def get_summary(html_content, length):
+    """extract text from html to generate a short summary"""
+    # remove HTML tags
+    summary = re.sub('<.+?>', '', html_content)
+    return summary[:length]

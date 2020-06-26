@@ -1,7 +1,7 @@
-from common import save_session
+from common import save_session, get_summary, type_to_str, type_map
 from flask import Flask, render_template, session, request
 from controller import auth, ueditor, message
-from model import User, init_db
+from model import User, init_db, Message
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -30,11 +30,9 @@ def auto_login():
 #         return redirect('/login?from=' + request.path)
 #     return None
 
-
-@app.route('/')
-@app.route('/index')
-def hello():
-    return render_template('index.html', article_count=3)
+# register function for Jinja
+app.jinja_env.globals.update(get_summary=get_summary)
+app.jinja_env.globals.update(type_to_str=type_to_str)
 
 
 if __name__ == '__main__':
