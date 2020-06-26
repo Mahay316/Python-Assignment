@@ -1,4 +1,5 @@
 # controller responsible for authentication and registration
+from common import save_session
 from flask import Blueprint, request, session, redirect, make_response, render_template
 from model import User, Message
 
@@ -26,14 +27,7 @@ def login():
     # authenticate
     result = User.find_by_username(username)
     if len(result) == 1 and password == result[0].password:
-        result = result[0]
-
-        # store login info
-        session['isLogin'] = 'true'
-        session['user_id'] = result.user_id
-        session['username'] = result.username
-        session['nickname'] = result.nickname
-        session['role'] = result.role
+        save_session(result[0])
 
         resp = make_response('success')
         # set cookies for automated login

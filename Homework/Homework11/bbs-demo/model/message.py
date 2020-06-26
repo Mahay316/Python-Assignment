@@ -73,3 +73,17 @@ class Message(Base):
             msg.reply_count += 1
             db.session.commit()
             return msg.reply_count
+
+    @staticmethod
+    def find_limit_of_type(msg_type, offset, length):
+        """query messages of msg_type, return records from offset to offset + length"""
+        result = db.session.query(Message, User.nickname, User.avatar) \
+            .join(User, User.user_id == Message.user_id).filter(Message.type == msg_type) \
+            .order_by(Message.message_id.desc()).limit(length).offset(offset).all()
+        return result
+
+    @staticmethod
+    def count_msg_of_type(msg_type):
+        """return number of messages of certain type"""
+        result = Message.query.filter_by(type=msg_type).count()
+        return result

@@ -2,9 +2,269 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>发布的留言</title>
+    <title>编程语言</title>
+
+    <!-- Bootstrap JQuery依赖 -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
+
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- MD5依赖 -->
+    <script src="/static/js/md5.js"></script>
+
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <link rel="stylesheet" href="/static/css/popovers.css"/>
+    <link rel="stylesheet" href="/static/css/message-list.css"/>
+    <script src="/static/js/userAuth.js"></script>
+    <script src="/static/js/accessory.js"></script>
+    <style>
+        .page-num {
+            margin: 20px;
+        }
+    </style>
 </head>
 <body>
+<!-- navigator -->
+<div class="menu bg-light shadow">
+    <div class="container" style="padding: 0;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-size: 16px">
+            <a class="navbar-brand brand" href="/">BBS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">查询</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">热议</a>
+                    </li>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            更多
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                               target="_blank">反馈</a>
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
+                               target="_blank">访问Github</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">关于</a>
+                        </div>
+                    </li>
+                </ul>
+                {% if session.get('isLogin') == 'true' %}
+                <button class="btn btn-success mr-3" onclick="location.href='/editor';">发布留言</button>
+                <div id="loginCenter">
+                    <a href="#"><img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/></a>
+                    <div class="userControl" style="display: none">
+                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                           target="_blank">反馈</a>
+                        <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment"
+                           target="_blank">访问Github</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:doLogout();">注销</a>
+                    </div>
+                </div>
+                {% else %}
+                <button class="btn btn-outline-success mr-3" data-toggle="modal"
+                        data-target="#staticBackdrop">登录
+                </button>
+                <button class="btn btn-outline-dark" onclick="doRegister();">注册</button>
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">登录</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="inputAccount">用户名</label>
+                        <input type="text" class="form-control" id="inputAccount" aria-describedby="emailHelp"
+                               placeholder="用户名或电子邮件">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">密码</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="remember">
+                        <label class="form-check-label" for="remember">记住我</label>
+                        <a href="#" style="float: right; padding-right: 10px">忘记密码?</a>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="loginBtn" class="btn btn-outline-success">登录</button>
+                <button type="button" class="btn btn-outline-dark" onclick="doRegister();">注册</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- content -->
+<div class="container" style="border: 0px solid red">
+    <div class="row" style="border: 0px solid blue">
+        <div class="row col-9" style="margin: 0;">
+            <div class="col-12 section">
+                {% for i in range(result | length) %}
+                <div class="row msg-list">
+                    <div class="col-1" style="padding: 0;">
+                        <img class="rounded-circle avatar" src="/static/img/{{result[i][2]}}"/>
+                    </div>
+                    <div class="col-11 detail">
+                        <div class="title">
+                            <a href="/message/detail/{{result[i][0].message_id}}">{{result[i][0].headline}}</a>
+                        </div>
+                        <div class="info">
+                            作者: {{result[i][1]}}&nbsp;&nbsp;&nbsp;
+                            日期: {{result[i][0].create_time}}&nbsp;&nbsp;&nbsp;
+                            阅读数: {{result[i][0].read_count}}&nbsp;&nbsp;&nbsp;
+                            回复数: {{result[i][0].reply_count}}
+                        </div>
+                        <div class="intro">Get started with Bootstrap, the world’s most popular framework for building
+                            responsive,
+                            mobile-first sites, with BootstrapCDN and a template starter page. Curious which components
+                            explicitly
+                            require jQuery, our JS, and Popper.js? Click the show components link below. If you’re at
+                            ...
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- pagination -->
+            <div class="d-flex justify-content-center col-12 section align-content-center">
+                <nav class="page-num">
+                    <ul class="pagination" style="margin: 0;">
+                        <li class="page-item {% if curr_page <= 1 %}disabled{% endif %}">
+                            <a class="page-link" href="/message/list/{{msg_type}}-{{curr_page - 1}}"
+                               aria-label="Previous">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+
+                        <!-- 超出12页将隐藏中间页码 -->
+                        {% if page_count > 12 %}
+                            {% for i in range(6) %}
+                            <li class="page-item">
+                                <a class="page-link" href="/message/list/{{msg_type}}-{{i + 1}}">{{i + 1}}</a>
+                            </li>
+                            {% endfor %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">...</a>
+                            </li>
+                            {% for i in range(page_count - 6, page_count) %}
+                            <li class="page-item">
+                                <a class="page-link" href="/message/list/{{msg_type}}-{{i + 1}}">{{i + 1}}</a>
+                            </li>
+                            {% endfor %}
+
+                        {% else %}
+
+                            {% for i in range(page_count) %}
+                            <li class="page-item">
+                                <a class="page-link" href="/message/list/{{msg_type}}-{{i + 1}}">{{i + 1}}</a>
+                            </li>
+                            {% endfor %}
+                        {% endif %}
+
+                        <li class="page-item {% if curr_page >= page_count %}disabled{% endif %}">
+                            <a class="page-link" href="/message/list/{{msg_type}}-{{curr_page + 1}}" aria-label="Next">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="col-3" style="padding-left: 15px; border: 0px solid black">
+            {% if result | length > 4 %}
+            <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
+                <a href="#" class="list-group-item list-group-item-action active text-center">
+                    新注册用户
+                </a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+                <a href="#" class="list-group-item list-group-item-action text-center"><img
+                        src="/static/img/brand.jpg" height="32" width="32"/>Mahay</a>
+            </div>
+            {% endif %}
+
+            <div class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
+                <a href="#" class="list-group-item list-group-item-action active text-center">
+                    留言分类
+                </a>
+                <ul class="list-group list-group-horizontal">
+                    <li class="col-6 list-group-item">编程语言</li>
+                    <li class="col-6 list-group-item">编程语言</li>
+                </ul>
+                <ul class="list-group list-group-horizontal">
+                    <li class="col-6 list-group-item">编程语言</li>
+                    <li class="col-6 list-group-item">编程语言</li>
+                </ul>
+                <ul class="list-group list-group-horizontal">
+                    <li class="col-6 list-group-item">编程语言</li>
+                    <li class="col-6 list-group-item">编程语言</li>
+                </ul>
+
+                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
+                <a href="#" class="list-group-item list-group-item-action text-center">编程语言</a>
+                <a href="#" class="list-group-item list-group-item-action active text-center"
+                   onclick="scrollToTop()">
+                    <svg class="bi bi-arrow-up-left-circle-fill text-light" width="1em" height="1em"
+                         viewBox="0 0 16 16"
+                         fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                         style="margin-bottom: 3px; margin-left: -3px;">
+                        <path fill-rule="evenodd"
+                              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM9.5 5h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0V6.707l4.146 4.147a.5.5 0 0 0 .708-.708L6.707 6H9.5a.5.5 0 0 0 0-1z"/>
+                    </svg>
+                    回到顶部
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- footer -->
+<footer class="footer text-muted">
+    <div class="container-fluid p-4">
+        <div class="row">
+            <div class="col-1"><a href="https://github.com/Mahay316/Python-Assignment" target="_blank">Github</a>
+            </div>
+            <div class="col-1"><a href="#">About</a></div>
+            <div class="col-1"><a href="#">Documentation</a></div>
+        </div>
+        <p>Bulletin Board System designed by Mahay for Python assignment.</p>
+        <p>A web application based on Flask.</p>
+    </div>
+</footer>
 </body>
 </html>

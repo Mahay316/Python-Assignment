@@ -218,7 +218,7 @@
                 </ul>
                 {% if session.get('isLogin') == 'true' %}
                 <div id="loginCenter">
-                    <a href="#"><img class="rounded-circle avatar" src="/static/img/brand.jpg"/></a>
+                    <a href="#"><img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/></a>
                     <div class="userControl" style="display: none">
                         <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
                            target="_blank">反馈</a>
