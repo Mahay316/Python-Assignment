@@ -15,6 +15,7 @@
 
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
+    <script src="/static/js/accessory-adjust.js"></script>
     <style>
         .message-detail {
             padding: 15px;
@@ -122,7 +123,7 @@
 
         .reply-box .reply-item {
             padding: 10px 15px;
-            margin: 0px;
+            margin: 0;
         }
 
         .reply-box .reply-item .reply-avatar {
@@ -130,6 +131,74 @@
             height: 32px;
         }
     </style>
+    <script type="text/javascript">
+        /* data format: [{comment_info, user_info, reply_list: [...]}, {...}, {...}}] */
+        function renderComment(data) {
+            let commentDiv = $('#commentDiv');
+            commentDiv.empty();
+            console.log(data);
+
+            let content = '';
+            // construct new comments
+            for (let i = 0; i < data.length; i++) {
+                content += '<div class="row col-12 comment-real">'
+                content += '<div class="col-1" style="padding: 0;">'
+                content += '<img class="rounded-circle avatar" src="/static/img/' + data[i]['avatar'] + '"/>'
+                content += '</div>'
+                content += '<div class="row col-11 comment-box">'
+                content += '<div class="col-12 comment-name">' + data[i]['nickname'] + '</div>'
+                content += '<div class="col-12 comment-content">'
+                content += '<p class="text">' + data[i]['content'] + '</p>'
+                content += '</div>'
+                content += '<div class="col-12 comment-info">' + data[i]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
+                content += '<a href="#" class="comment-info">回复</a>'
+                content += '</div>'
+
+                let tmp = data[i]['reply_list'];
+                if (data[i]['reply_list'].length > 0) {
+                    content += '<div class="col-12 reply-box">'
+                    for (let j = 0; j < tmp.length; j++) {
+                        content += '<div class="row reply-item">'
+                        content += '<a class="col-1" style="padding: 0;" href="#">'
+                        content += '<img class="rounded-circle reply-avatar" src="/static/img/' + tmp[j]['avatar'] + '"/>'
+                        content += '</a>'
+                        content += '<div class="col-11" style="padding: 0; margin-bottom: 10px;">'
+                        content += '<span class="comment-name">' + tmp[j]['nickname'] + '&nbsp;</span>'
+                        content += '<span class="text">' + tmp[j]['content'] + '</span>'
+                        content += '</div>'
+                        content += '<div class="col-1" style="visibility: hidden;"></div>'
+                        content += '<div class="col-11 comment-info" style="padding: 0">' + tmp[j]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
+                        content += '<a href="#" class="comment-info">回复</a>'
+                        content += '</div>'
+                        content += '</div>'
+                    }
+                    content += '</div>'
+                }
+                content += '</div>'
+                content += '</div>'
+            }
+
+            // fill the content
+            commentDiv.html(content);
+            adjustSidebar();
+        }
+
+        function requestComment(articleId, pageId) {
+            $.ajax({
+                url: '/comment/' + articleId + '-' + pageId,
+                method: 'get',
+                success: function (data) {
+                    renderComment(data);
+                }
+            });
+        }
+
+        // msg_id is rendered by Jinja
+        let msg = {{msg_id}};
+        $(function () {
+            requestComment(msg, 0);
+        });
+    </script>
 </head>
 <body>
 <!-- navigator -->
@@ -232,7 +301,7 @@
 <!-- content -->
 <div class="container" style="border: 0px solid red">
     <div class="row" style="border: 0px solid blue">
-        <div class="row col-9" style="margin: 10px 0 0 0;">
+        <div id='mainContent' class="row col-9" style="margin: 10px 0 0 0;">
             <div class="col-12 message-detail">
                 <div class="col-12 title">
                     {{msg.headline}}
@@ -259,65 +328,14 @@
                 </div>
                 <div class="col-11" style="margin: 15px 20px 10px 20px; border-bottom: 1px solid #cccccc;"></div>
 
-                <!-- one piece of comment -->
-                <div class="row col-12 comment-real">
-                    <div class="col-1" style="padding: 0;">
-                        <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
-                    </div>
-                    <div class="row col-11 comment-box">
-                        <div class="col-12 comment-name">Mahay</div>
-                        <div class="col-12 comment-content">
-                            <p class="text">评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试评论测试</p>
-                        </div>
-                        <div class="col-12 comment-info">2020-6-25&nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href="#" class="comment-info">回复</a>
-                        </div>
-                        <div class="col-12 reply-box">
-                            <div class="row reply-item">
-                                <a class="col-1" style="padding: 0;" href="#">
-                                    <img class="rounded-circle reply-avatar" src="/static/img/usericon.jpeg"/>
-                                </a>
-                                <div class="col-11" style="padding: 0; margin-bottom: 10px;">
-                                    <span class="comment-name">Mahay&nbsp;</span>
-                                    <span class="text">MahayMahayMahayMahayMahayMahayMahayMahMahayMahayMahayayMahayMahayMahayMahayMahayMahay</span>
-                                </div>
-                                <div class="col-1" style="visibility: hidden;"></div>
-                                <div class="col-11 comment-info" style="padding: 0">2020-6-25&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <a href="#" class="comment-info">回复</a>
-                                </div>
-                            </div>
-                            <div class="row reply-item">
-                                <a class="col-1" style="padding: 0;" href="#">
-                                    <img class="rounded-circle reply-avatar" src="/static/img/usericon.jpeg"/>
-                                </a>
-                                <div class="col-11" style="padding: 0; margin-bottom: 10px;">
-                                    <span class="comment-name">Mahay&nbsp;</span>
-                                    <span class="text">MahayMahayMahayMahayMahayMahayMahayMahMahayMahayMahayayMahayMahayMahayMahayMahayMahay</span>
-                                </div>
-                                <div class="col-1" style="visibility: hidden;"></div>
-                                <div class="col-11 comment-info" style="padding: 0">2020-6-25&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <a href="#" class="comment-info">回复</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- textarea nested in comments -->
-                        <div class="row col-12" style="margin: 0 0 0 10px; padding: 0;">
-                            <div class="col-1" style="padding: 0;">
-                                <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
-                            </div>
-                            <div class="row col-11 textarea-container" style="padding: 0 0 0 15px;">
-                                <textarea class="col-10" placeholder="请发表文明言论"></textarea>
-                                <button class="col-2 btn btn-primary comment-submit">发表评论</button>
-                            </div>
-                        </div>
-
-                    </div>
+                <!-- paginated comments will be filled to this div dynamically -->
+                <div id="commentDiv" class="row col-12" style="margin: 0; padding: 0;">
+                    <!-- comments here -->
                 </div>
             </div>
         </div>
         <div class="col-3" style="padding-left: 15px">
-            <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
+            <div id="userSidebar" class="col-12 list-group" style="padding: 0; margin-top: 10px;">
                 <span href="#" class="list-group-item list-group-item-action active text-center">
                     新注册用户
                 </span>

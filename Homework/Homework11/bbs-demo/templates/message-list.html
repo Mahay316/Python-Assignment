@@ -162,15 +162,23 @@
                         <!-- 超出12页将隐藏中间页码 -->
                         {% if page_count > 12 %}
                         {% for i in range(6) %}
-                        <li class="page-item">
+                        <li class="page-item {% if curr_page == i %}disabled{% endif %}">
                             <a class="page-link" href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
                         </li>
                         {% endfor %}
                         <li class="page-item disabled">
                             <a class="page-link" href="#">...</a>
                         </li>
+                        {% if curr_page > 6 and curr_page <= page_count - 6 %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">{{curr_page}}</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                        {% endif %}
                         {% for i in range(page_count - 6, page_count) %}
-                        <li class="page-item">
+                        <li class="page-item {% if curr_page == i %}disabled{% endif %}">
                             <a class="page-link" href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
                         </li>
                         {% endfor %}
@@ -178,8 +186,9 @@
                         {% else %}
 
                         {% for i in range(page_count) %}
-                        <li class="page-item">
-                            <a class="page-link" href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
+                        <li class="page-item {% if curr_page == i %}disabled{% endif %}">
+                            <a class="page-link"
+                               href="/message/list/{{msg_type}}-{{i}}">{{i + 1}}</a>
                         </li>
                         {% endfor %}
                         {% endif %}

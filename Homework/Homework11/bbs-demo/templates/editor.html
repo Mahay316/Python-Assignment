@@ -102,12 +102,12 @@
                     bootbox.alert({title: '错误提示', message: '标题不能少于4个字'});
                     return false;
                 }
-                if (ue.getContentTxt().length < 15) {
-                    bootbox.alert({title: '错误提示', message: '内容不能少于15个字'});
+                if (ue.getContentTxt().length < 10) {
+                    bootbox.alert({title: '错误提示', message: '内容不能少于10个字'});
                     return false;
                 }
                 if (Number(msgType.val()) < 0) {
-                    bootbox.alert({title: '错误提示', message: '请选择发布的文章类型'});
+                    bootbox.alert({title: '错误提示', message: '请选择发布的留言类型'});
                     return false;
                 }
                 return true;

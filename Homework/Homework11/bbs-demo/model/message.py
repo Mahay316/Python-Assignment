@@ -47,7 +47,7 @@ class Message(Base):
     def insert_message(user_id, msg_type, headline, content, drafted=False):
         """add a new message"""
         msg = Message(user_id=user_id, type=msg_type, headline=headline,
-                      content=content, drafted=drafted, )
+                      content=content, drafted=drafted)
         db.session.add(msg)
         db.session.commit()
 
