@@ -151,29 +151,25 @@
                 content += '<p class="text">' + data[i]['content'] + '</p>'
                 content += '</div>'
                 content += '<div class="col-12 comment-info">' + data[i]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
-                content += '<a href="#" class="comment-info">回复</a>'
+                content += '<a href="javascript: renderTextArea(\'#' + data[i]['comment_id'] + '\')" class="comment-info">回复</a>'
                 content += '</div>'
-
+                content += '<div id="' + data[i]['comment_id'] + '" class="col-12 reply-box">'
                 let tmp = data[i]['reply_list'];
-                if (data[i]['reply_list'].length > 0) {
-                    content += '<div class="col-12 reply-box">'
-                    for (let j = 0; j < tmp.length; j++) {
-                        content += '<div class="row reply-item">'
-                        content += '<a class="col-1" style="padding: 0;" href="#">'
-                        content += '<img class="rounded-circle reply-avatar" src="/static/img/' + tmp[j]['avatar'] + '"/>'
-                        content += '</a>'
-                        content += '<div class="col-11" style="padding: 0; margin-bottom: 10px;">'
-                        content += '<span class="comment-name">' + tmp[j]['nickname'] + '&nbsp;</span>'
-                        content += '<span class="text">' + tmp[j]['content'] + '</span>'
-                        content += '</div>'
-                        content += '<div class="col-1" style="visibility: hidden;"></div>'
-                        content += '<div class="col-11 comment-info" style="padding: 0">' + tmp[j]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
-                        content += '<a href="#" class="comment-info">回复</a>'
-                        content += '</div>'
-                        content += '</div>'
-                    }
+                for (let j = 0; j < tmp.length; j++) {
+                    content += '<div class="row reply-item">'
+                    content += '<a class="col-1" style="padding: 0;" href="#">'
+                    content += '<img class="rounded-circle reply-avatar" src="/static/img/' + tmp[j]['avatar'] + '"/>'
+                    content += '</a>'
+                    content += '<div class="col-11" style="padding: 0; margin-bottom: 10px;">'
+                    content += '<span class="comment-name">' + tmp[j]['nickname'] + '&nbsp;</span>'
+                    content += '<span class="text">' + tmp[j]['content'] + '</span>'
+                    content += '</div>'
+                    content += '<div class="col-1" style="visibility: hidden;"></div>'
+                    content += '<div class="col-11 comment-info" style="padding: 0">' + tmp[j]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
+                    content += '</div>'
                     content += '</div>'
                 }
+                content += '</div>'
                 content += '</div>'
                 content += '</div>'
             }
@@ -181,6 +177,13 @@
             // fill the content
             commentDiv.html(content);
             adjustSidebar();
+        }
+
+        function renderTextArea(where) {
+            let area = $('#nestedArea');
+            // append TextArea to tag whose id is 'where'
+            $(where).prepend(area);
+            area.css('visibility', 'visible');
         }
 
         function requestComment(articleId, pageId) {
@@ -332,11 +335,12 @@
                 <div id="commentDiv" class="row col-12" style="margin: 0; padding: 0;">
                     <!-- comments here -->
                 </div>
+
             </div>
         </div>
         <div class="col-3" style="padding-left: 15px">
             <div id="userSidebar" class="col-12 list-group" style="padding: 0; margin-top: 10px;">
-                <span href="#" class="list-group-item list-group-item-action active text-center">
+                <span class="list-group-item list-group-item-action active text-center">
                     新注册用户
                 </span>
                 {% for i in range(users | length) %}
@@ -348,7 +352,7 @@
                 {% endfor %}
             </div>
             <div class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
-                <span href="#" class="list-group-item list-group-item-action active text-center">
+                <span class="list-group-item list-group-item-action active text-center">
                     留言分类
                 </span>
 
@@ -371,6 +375,17 @@
                 </a>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- nested comment text area -->
+<div id="nestedArea" class="row col-12" style="margin: 10px 0 0 10px; padding: 0; visibility: hidden;">
+    <div class="col-1" style="padding: 0;">
+        <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
+    </div>
+    <div class="row col-11 textarea-container" style="padding: 0 0 0 15px;">
+        <textarea class="col-10" placeholder="请发表文明言论"></textarea>
+        <button class="col-2 btn btn-primary comment-submit">发表评论</button>
     </div>
 </div>
 
