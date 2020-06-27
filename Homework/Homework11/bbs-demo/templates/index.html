@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="/static/img/favicon.png" rel="SHORTCUT ICON">
     <title>BBS</title>
 
     <!-- Bootstrap JQuery依赖 -->
@@ -127,12 +128,12 @@
 <div class="container" style="border: 0px solid red">
     <div class="row" style="border: 0px solid blue">
         <div class="row col-9" style="margin: 0;">
-            {% for i in range(msg_type | length) %}
+            {% for i in range(type_map | length) %}
             <div class="col-12 section">
                 <div class="d-flex col-12 justify-content-center">
                     <button type="button" class="btn btn-light p-3 section-title"
                             onclick="location.href='/message/list/{{i}}-0';">
-                        {{msg_type[i]}}
+                        {{type_map[i]}}
                         {% if msg_count[i] > 999 %}
                         <span class="badge badge-danger" style="min-width: 78px;">999+</span>
                         {% else %}

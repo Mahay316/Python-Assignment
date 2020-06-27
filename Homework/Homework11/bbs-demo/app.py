@@ -1,7 +1,7 @@
-from common import save_session, get_summary, type_to_str, type_map
-from flask import Flask, render_template, session, request
-from controller import auth, ueditor, message
-from model import User, init_db, Message
+from common import save_session, get_summary, type_to_str
+from flask import Flask, session, request
+from controller import auth, ueditor, message, comment
+from model import User, init_db
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -28,7 +28,7 @@ def auto_login():
 #         return None
 #     if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
 #         return redirect('/login?from=' + request.path)
-#     return None
+
 
 # register function for Jinja
 app.jinja_env.globals.update(get_summary=get_summary)
@@ -42,4 +42,5 @@ if __name__ == '__main__':
     app.register_blueprint(auth)
     app.register_blueprint(ueditor)
     app.register_blueprint(message)
+    app.register_blueprint(comment)
     app.run(debug=True)

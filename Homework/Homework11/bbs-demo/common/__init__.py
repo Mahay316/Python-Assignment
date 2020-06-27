@@ -1,1 +1,2 @@
-from .util import type_map, type_to_str, save_session, get_summary
+from .util import save_session
+from .jinja_func import type_map, type_to_str, get_summary

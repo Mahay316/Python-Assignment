@@ -45,6 +45,7 @@ def post_message():
 def get_msg(msg_id):
     """get message with message id message_id"""
     try:
+        users = User.find_new(5)
         result = Message.find_by_id(msg_id)
         if len(result) != 1:
             # if length == 0, then message doesn't exist
@@ -57,7 +58,8 @@ def get_msg(msg_id):
     # increase message's read count by 1
     Message.increase_read_count(msg_id)
     result = result[0]
-    return render_template('message-detail.html', msg=result[0], nickname=result[1])
+    return render_template('message-detail.html', msg=result[0], users=users,
+                           type_map=type_map, nickname=result[1])
 
 
 @message.route('/message/list/<int:msg_type>-<int:page>')
