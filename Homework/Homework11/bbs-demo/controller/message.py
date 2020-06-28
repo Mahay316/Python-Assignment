@@ -66,7 +66,7 @@ def get_msg(msg_id):
 def get_msg_list(msg_type, page):
     """get paginated message list"""
     count = ceil(Message.count_msg_of_type(msg_type) / 10)
-    if msg_type >= len(type_map) or page >= count:  # request a nonexistent page
+    if msg_type >= len(type_map) or (page != 0 and page >= count):  # request a nonexistent page
         abort(404)
 
     result = Message.find_limit_of_type(msg_type, page * 10, 10)

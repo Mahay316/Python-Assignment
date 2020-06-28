@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="/static/css/message-list.css"/>
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
+    <script src="/static/js/accessory-adjust.js"></script>
     <style>
         .page-num {
             margin: 20px;
@@ -126,7 +127,7 @@
 <!-- content -->
 <div class="container" style="border: 0px solid red">
     <div class="row" style="border: 0px solid blue">
-        <div class="row col-9" style="margin: 0;">
+        <div id='mainContent' class="row col-9" style="margin: 0;">
             <div class="col-12 section">
                 {% for i in range(result | length) %}
                 <div class="row msg-list" {% if i == 0 %}style="border-top-width: 0;"{% endif %}>
@@ -204,7 +205,7 @@
         </div>
         <div class="col-3" style="padding-left: 15px; border: 0px solid black">
             {% if result | length > 3 %}
-            <div class="col-12 list-group" style="padding: 0; margin-top: 10px;">
+            <div id='userSidebar' class="col-12 list-group" style="padding: 0; margin-top: 10px;">
                 <span href="#" class="list-group-item list-group-item-action active text-center">
                     新注册用户
                 </span>
@@ -218,7 +219,7 @@
             </div>
             {% endif %}
 
-            <div class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
+            <div id='sidebar' class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
                 <span href="#" class="list-group-item list-group-item-action active text-center">
                     留言分类
                 </span>

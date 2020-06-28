@@ -81,7 +81,8 @@ class Message(Base):
     def find_limit_of_type(msg_type, offset, length):
         """query messages of msg_type, return records from offset to offset + length"""
         result = db.session.query(Message, User.nickname, User.avatar) \
-            .join(User, User.user_id == Message.user_id).filter(Message.type == msg_type) \
+            .join(User, User.user_id == Message.user_id)\
+            .filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0) \
             .order_by(Message.message_id.desc()).limit(length).offset(offset).all()
         return result
 
