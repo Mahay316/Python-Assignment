@@ -27,8 +27,10 @@ class Message(Base):
         format [(Message, nickname)]
         """
         # only the author can find his/her hidden/drafted message
-        result = db.session.query(Message, User.nickname, User.user_id).join(User, User.user_id == Message.user_id).filter(or_(and_(
-            Message.hidden == 0, Message.drafted == 0), User.user_id == session.get('user_id')),
+        result = db.session.query(Message, User.nickname, User.user_id).join(User,
+                                                                             User.user_id == Message.user_id).filter(
+            or_(and_(
+                Message.hidden == 0, Message.drafted == 0), User.user_id == session.get('user_id')),
             Message.message_id == msg_id).all()
         return result
 
@@ -86,13 +88,14 @@ class Message(Base):
     @staticmethod
     def count_msg_of_type(msg_type):
         """return number of messages of certain type"""
-        result = Message.query.filter_by(type=msg_type).count()
+        result = Message.query.filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0).count()
         return result
 
     @staticmethod
     def find_top(msg_type, length):
         """return the first length messages of msg_type sorted by reply_count"""
         result = db.session.query(Message, User.nickname, User.avatar) \
-            .join(User, User.user_id == Message.user_id).filter(Message.type == msg_type) \
+            .join(User, User.user_id == Message.user_id) \
+            .filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0) \
             .order_by(Message.reply_count.desc()).limit(length).all()
         return result

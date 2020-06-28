@@ -1,5 +1,5 @@
 from common import save_session, get_summary, type_to_str
-from flask import Flask, session, request
+from flask import Flask, session, request, render_template
 from controller import auth, ueditor, message, comment
 from model import User, init_db
 
@@ -30,10 +30,14 @@ def auto_login():
 #         return redirect('/login?from=' + request.path)
 
 
+@app.errorhandler(404)
+def page_not_found(err):
+    return render_template('error-404.html')
+
+
 # register function for Jinja
 app.jinja_env.globals.update(get_summary=get_summary)
 app.jinja_env.globals.update(type_to_str=type_to_str)
-
 
 if __name__ == '__main__':
     app.app_context().push()
