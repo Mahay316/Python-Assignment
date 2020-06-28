@@ -148,36 +148,36 @@
             paginationBar.empty();
 
             let content = '';
-            content += '<ul class="pagination">'
+            content += '<ul class="pagination">';
 
             if (curr_page <= 0)
-                content += '<li class="page-item disabled">'
+                content += '<li class="page-item disabled">';
             else
-                content += '<li class="page-item">'
-            content += '<a class="page-link" href="javascript: requestComment(msg, ' + (curr_page - 1) + ')" aria-label="Previous">'
-            content += '<span aria-hidden="true">&laquo;</span>'
-            content += '</a>'
-            content += '</li>'
+                content += '<li class="page-item">';
+            content += '<a class="page-link" href="javascript: requestComment(msg, ' + (curr_page - 1) + ')" aria-label="Previous">';
+            content += '<span aria-hidden="true">&laquo;</span>';
+            content += '</a>';
+            content += '</li>';
 
             for (let i = 0; i < page_count; i++) {
                 if (curr_page === i)
                     content += '<li class="page-item disabled"><a class="page-link"' +
-                        ' href="#">' + (i + 1) + '</a></li>'
+                        ' href="#">' + (i + 1) + '</a></li>';
                 else
                     content += '<li class="page-item"><a class="page-link"' +
-                        ' href="javascript: requestComment(msg, ' + i + ');">' + (i + 1) + '</a></li>'
+                        ' href="javascript: requestComment(msg, ' + i + ');">' + (i + 1) + '</a></li>';
             }
 
             if (curr_page >= page_count - 1)
-                content += '<li class="page-item disabled">'
+                content += '<li class="page-item disabled">';
             else
-                content += '<li class="page-item">'
-            content += '<a class="page-link" href="javascript: requestComment(msg, ' + (curr_page + 1) + ')" aria-label="Next">'
-            content += '<span aria-hidden="true">&raquo;</span>'
-            content += '</a>'
-            content += '</li>'
+                content += '<li class="page-item">';
+            content += '<a class="page-link" href="javascript: requestComment(msg, ' + (curr_page + 1) + ')" aria-label="Next">';
+            content += '<span aria-hidden="true">&raquo;</span>';
+            content += '</a>';
+            content += '</li>';
 
-            content += '</ul>'
+            content += '</ul>';
 
             paginationBar.html(content);
         }
@@ -194,37 +194,43 @@
             let content = '';
             // construct new comments
             for (let i = 0; i < data.length; i++) {
-                content += '<div id="msg' + data[i]['comment_id'] + '" class="row col-12 comment-real">'
-                content += '<div class="col-1" style="padding: 0;">'
-                content += '<img class="rounded-circle avatar" src="/static/img/' + data[i]['avatar'] + '"/>'
-                content += '</div>'
-                content += '<div class="row col-11 comment-box">'
-                content += '<div id="user' + data[i]['user_id'] + '" class="col-12 comment-name">' + data[i]['nickname'] + '</div>'
-                content += '<div class="col-12 comment-content">'
-                content += '<p class="text">' + data[i]['content'] + '</p>'
-                content += '</div>'
-                content += '<div class="col-12 comment-info">' + data[i]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
-                content += '<a href="javascript: renderTextArea(\'#msg' + data[i]['comment_id'] + '\')" class="comment-info">回复</a>'
-                content += '</div>'
-                content += '<div class="col-12 reply-box">'
+                content += '<div id="com' + data[i]['comment_id'] + '" class="row col-12 comment-real">';
+                content += '<div class="col-1" style="padding: 0;">';
+                content += '<img class="rounded-circle avatar" src="/static/img/' + data[i]['avatar'] + '"/>';
+                content += '</div>';
+                content += '<div class="row col-11 comment-box">';
+                content += '<div id="user' + data[i]['user_id'] + '" class="col-12 comment-name">' + data[i]['nickname'] + '</div>';
+                content += '<div class="col-12 comment-content">';
+                content += '<p class="text">' + data[i]['content'] + '</p>';
+                content += '</div>';
+                content += '<div class="col-12 comment-info">' + data[i]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;';
+                content += '<a href="javascript: renderTextArea(\'#com' + data[i]['comment_id'] + '\')" class="comment-info">回复</a>';
+                if (data[i]['is_owner'])
+                    content += '&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript: hideComment('
+                            + data[i]['comment_id'] + ');" class="comment-info">隐藏</a>';
+                content += '</div>';
+                content += '<div class="col-12 reply-box">';
                 let tmp = data[i]['reply_list'];
                 for (let j = 0; j < tmp.length; j++) {
-                    content += '<div class="row reply-item">'
-                    content += '<a class="col-1" style="padding: 0;" href="#">'
-                    content += '<img class="rounded-circle reply-avatar" src="/static/img/' + tmp[j]['avatar'] + '"/>'
-                    content += '</a>'
-                    content += '<div class="col-11" style="padding: 0; margin-bottom: 10px;">'
-                    content += '<span class="comment-name">' + tmp[j]['nickname'] + '&nbsp;</span>'
-                    content += '<span class="text">' + tmp[j]['content'] + '</span>'
-                    content += '</div>'
-                    content += '<div class="col-1" style="visibility: hidden;"></div>'
-                    content += '<div class="col-11 comment-info" style="padding: 0">' + tmp[j]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
-                    content += '</div>'
-                    content += '</div>'
+                    content += '<div class="row reply-item">';
+                    content += '<a class="col-1" style="padding: 0;" href="#">';
+                    content += '<img class="rounded-circle reply-avatar" src="/static/img/' + tmp[j]['avatar'] + '"/>';
+                    content += '</a>';
+                    content += '<div class="col-11" style="padding: 0; margin-bottom: 10px;">';
+                    content += '<span class="comment-name">' + tmp[j]['nickname'] + '&nbsp;</span>';
+                    content += '<span class="text">' + tmp[j]['content'] + '</span>';
+                    content += '</div>';
+                    content += '<div class="col-1" style="visibility: hidden;"></div>';
+                    content += '<div class="col-11 comment-info" style="padding: 0">' + tmp[j]['create_time'];
+                    if (tmp[j]['is_owner'])
+                        content += '&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript: hideComment('
+                            + tmp[j]['comment_id'] + ');" class="comment-info">隐藏</a>';
+                    content += '</div>';
+                    content += '</div>';
                 }
-                content += '</div>'
-                content += '</div>'
-                content += '</div>'
+                content += '</div>';
+                content += '</div>';
+                content += '</div>';
             }
 
             // fill the content
@@ -301,6 +307,26 @@
                             requestComment(msg, curr_page);
                     } else {
                         bootbox.alert({title: '错误提示', message: '评论发表失败', backdrop: true});
+                    }
+                }
+            });
+        }
+
+        function hideComment(comment_id) {
+            $.ajax({
+                url: '/comment',
+                method: 'delete',
+                data: {comment_id: comment_id},
+                success: function (data) {
+                    if (data === 'invalid') {
+                         bootbox.alert({title: '错误提示', message: '非法参数', backdrop: true});
+                    } else if (data === 'permission-denied') {
+                         bootbox.alert({title: '错误提示', message: '未登录', backdrop: true});
+                    } else if (data === 'fail') {
+                        bootbox.alert({title: '错误提示', message: '隐藏失败', backdrop: true});
+                    } else {
+                        // success
+                        requestComment(msg, 0);
                     }
                 }
             });

@@ -28,6 +28,29 @@ def post_comment():
         return 'fail'
 
 
+@comment.route('/comment', methods=['DELETE'])
+def hide_comment():
+    # hiding comments requires login
+    if session.get('isLogin') != 'true':
+        return 'permission-denied'
+
+    comment_id = request.form.get('comment_id')
+    result = Comment.find_by_id(comment_id)
+
+    if len(result) != 1:
+        return 'invalid'
+    elif result[0].user_id != session.get('user_id'):
+        return 'permission-denied'
+    else:
+        # the comment exists and current user has permission
+        try:
+            Comment.hide_comment(comment_id)
+            return 'success'
+        except IOError as e:
+            print(e)
+            return 'fail'
+
+
 # AJAX interface
 @comment.route('/comment/<int:msg_id>-<int:page>')
 def get_comment(msg_id, page):

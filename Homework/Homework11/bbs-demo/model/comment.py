@@ -26,6 +26,21 @@ class Comment(Base):
         return comment.comment_id
 
     @staticmethod
+    def find_by_id(comment_id):
+        """return comment of the certain comment_id"""
+        result = Comment.query.filter_by(comment_id=comment_id).all()
+        return result
+
+    @staticmethod
+    def hide_comment(comment_id):
+        """hide the comment of the certain comment_id"""
+        result = Comment.query.filter_by(comment_id=comment_id).first()
+        if result is not None:
+            result.hidden = 1
+            db.session.commit()
+        return result.comment_id
+
+    @staticmethod
     def find_original_comment(msg_id, offset, length):
         """return all comments of message msg_id
         this static method also prepares for comments pagination

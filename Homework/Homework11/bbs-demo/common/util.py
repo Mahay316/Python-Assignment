@@ -9,7 +9,8 @@ def flatten_query_result(result):
     for c, u in result:
         tmp = {
             'create_time': c.create_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'update_time': c.update_time.strftime('%Y-%m-%d %H:%M:%S')
+            'update_time': c.update_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'is_owner': c.user_id == session.get('user_id')
         }
         for k, v in c.__dict__.items():
             if not (k.startswith('_sa_instance_state') or k in tmp):
