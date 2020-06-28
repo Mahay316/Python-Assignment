@@ -59,7 +59,7 @@ def get_msg(msg_id):
     Message.increase_read_count(msg_id)
     result = result[0]
     return render_template('message-detail.html', msg=result[0], users=users,
-                           type_map=type_map, nickname=result[1], msg_id=msg_id)
+                           type_map=type_map, nickname=result[1], user_id=result[2])
 
 
 @message.route('/message/list/<int:msg_type>-<int:page>')

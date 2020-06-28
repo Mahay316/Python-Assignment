@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <link href="/static/img/favicon.png" rel="SHORTCUT ICON">
-    <title>{{msg.headline}}</title>
+    <title>BBS - {{msg.headline}}</title>
 
-    <link rel="stylesheet" href="/static/css/navigator.css"/>
 
     <!-- Bootstrap JQuery依赖 -->
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
 
     <script src="/static/js/jquery-3.5.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- MD5依赖 -->
+    <script src="/static/js/md5.js"></script>
+
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <link rel="stylesheet" href="/static/css/popovers.css"/>
 
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
@@ -141,19 +146,19 @@
             let content = '';
             // construct new comments
             for (let i = 0; i < data.length; i++) {
-                content += '<div class="row col-12 comment-real">'
+                content += '<div id="msg' + data[i]['comment_id'] + '" class="row col-12 comment-real">'
                 content += '<div class="col-1" style="padding: 0;">'
                 content += '<img class="rounded-circle avatar" src="/static/img/' + data[i]['avatar'] + '"/>'
                 content += '</div>'
                 content += '<div class="row col-11 comment-box">'
-                content += '<div class="col-12 comment-name">' + data[i]['nickname'] + '</div>'
+                content += '<div id="user' + data[i]['user_id'] + '" class="col-12 comment-name">' + data[i]['nickname'] + '</div>'
                 content += '<div class="col-12 comment-content">'
                 content += '<p class="text">' + data[i]['content'] + '</p>'
                 content += '</div>'
                 content += '<div class="col-12 comment-info">' + data[i]['create_time'] + '&nbsp;&nbsp;&nbsp;&nbsp;'
-                content += '<a href="javascript: renderTextArea(\'#' + data[i]['comment_id'] + '\')" class="comment-info">回复</a>'
+                content += '<a href="javascript: renderTextArea(\'#msg' + data[i]['comment_id'] + '\')" class="comment-info">回复</a>'
                 content += '</div>'
-                content += '<div id="' + data[i]['comment_id'] + '" class="col-12 reply-box">'
+                content += '<div class="col-12 reply-box">'
                 let tmp = data[i]['reply_list'];
                 for (let j = 0; j < tmp.length; j++) {
                     content += '<div class="row reply-item">'
@@ -181,9 +186,11 @@
 
         function renderTextArea(where) {
             let area = $('#nestedArea');
-            // append TextArea to tag whose id is 'where'
-            $(where).prepend(area);
-            area.css('visibility', 'visible');
+            // append TextArea to tag of class reply-box whose parent's id is 'where'
+            $(where + ' .reply-box').prepend(area);
+            area.css('display', 'flex');
+            $('#nestedArea button').attr('onclick', 'postComment("second", '
+                + $(where).attr('id').substr(3) + ', ' + $(where + ' .comment-name').attr('id').substr(4) + ')');
         }
 
         function requestComment(articleId, pageId) {
@@ -197,9 +204,83 @@
         }
 
         // msg_id is rendered by Jinja
-        let msg = {{msg_id}};
+        const msg = Number('{{msg.message_id}}');
+        const user = Number('{{user_id}}');
+
+        function postComment(type, reply_to, reply_to_id) {
+            // mainTextArea is comment for the message
+            // secondTextArea is reply to comment
+            const mainTextArea = $('#mainTextArea');
+            const secondTextArea = $('#secondTextArea');
+            let content = '';
+            if (type === 'main') {
+                if (mainTextArea.val().length <= 0 || mainTextArea.val().length > 200) {
+                    mainTextArea.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-top');
+                    return false;
+                }
+
+                // default parameter for main comment
+                reply_to = 0;
+                reply_to_id = user;
+                content = mainTextArea.val();
+                mainTextArea.val('');
+            } else if (type === 'second') {
+                if (secondTextArea.val().length <= 0 || secondTextArea.val().length > 200) {
+                    secondTextArea.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-top');
+                    return false;
+                }
+                content = secondTextArea.val();
+                secondTextArea.val('');
+            }
+
+            $.ajax({
+                url: '/comment',
+                method: 'post',
+                data: {
+                    msg_id: msg,
+                    content: content,
+                    reply_to: reply_to,
+                    reply_to_id: reply_to_id
+                },
+                success: function (data) {
+                   if (data === 'permission-denied') {
+                       bootbox.alert({title: '错误提示', message: '请先登录再发表评论'});
+                   } else if (data === 'invalid') {
+                       bootbox.alert({title: '错误提示', message: '参数异常'});
+                   } else if (data === 'success') {
+                        requestComment(msg, 0);
+                   } else {
+                       bootbox.alert({title: '错误提示', message: '评论发表失败', backdrop: true});
+                   }
+                }
+            });
+        }
+
         $(function () {
             requestComment(msg, 0);
+
+            const mainTextArea = $('#mainTextArea');
+            const secondTextArea = $('#secondTextArea');
+            // initialize popover
+            mainTextArea.popover({
+                content: '内容不能为空或超过200字',
+                placement: 'top',
+                trigger: 'manual'
+            });
+            mainTextArea.focus(function () {
+                mainTextArea.popover('hide');
+            });
+
+            secondTextArea.popover({
+                content: '内容不能为空或超过200字',
+                placement: 'top',
+                trigger: 'manual'
+            });
+            secondTextArea.focus(function () {
+                secondTextArea.popover('hide');
+            });
         });
     </script>
 </head>
@@ -243,7 +324,7 @@
                 {% if session.get('isLogin') == 'true' %}
                 <button class="btn btn-success mr-3" onclick="location.href='/editor';">发布留言</button>
                 <div id="loginCenter">
-                    <a href="#"><img class="rounded-circle avatar" src="/static/img/brand.jpg"/></a>
+                    <a href="#"><img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/></a>
                     <div class="userControl" style="display: none">
                         <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
                            target="_blank">反馈</a>
@@ -323,11 +404,17 @@
             <!-- comments -->
             <div class="row col-12 comment" style="text-align: center">
                 <div class="col-1" style="padding: 0;">
-                    <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
+                    <img class="rounded-circle avatar"
+                         src="/static/img/{% if session.get('isLogin') == 'true' %}{{session.get('avatar')}}{% else %}no-login.png{% endif %}"/>
                 </div>
                 <div class="row col-11 textarea-container">
-                    <textarea class="col-10" placeholder="请发表文明言论"></textarea>
-                    <button class="col-2 btn btn-primary comment-submit">发表评论</button>
+                    <textarea id="mainTextArea" class="col-10" {% if session.get('isLogin') != 'true'
+                    %}disabled="true"{% endif %} placeholder="请发表文明合法言论"></textarea>
+                    <button class="col-2 btn btn-primary comment-submit" {% if session.get(
+                    'isLogin') != 'true' %}disabled="true"{% endif %}
+                    onclick="postComment('main')">
+                    发表评论
+                    </button>
                 </div>
                 <div class="col-11" style="margin: 15px 20px 10px 20px; border-bottom: 1px solid #cccccc;"></div>
 
@@ -379,13 +466,17 @@
 </div>
 
 <!-- nested comment text area -->
-<div id="nestedArea" class="row col-12" style="margin: 10px 0 0 10px; padding: 0; visibility: hidden;">
+<div id="nestedArea" class="row col-12" style="margin: 10px 0 0 10px; padding: 0; display: none;">
     <div class="col-1" style="padding: 0;">
-        <img class="rounded-circle avatar" src="/static/img/brand.jpg"/>
+        <img class="rounded-circle avatar"
+             src="/static/img/{% if session.get('isLogin') == 'true' %}{{session.get('avatar')}}{% else %}no-login.png{% endif %}"/>
     </div>
     <div class="row col-11 textarea-container" style="padding: 0 0 0 15px;">
-        <textarea class="col-10" placeholder="请发表文明言论"></textarea>
-        <button class="col-2 btn btn-primary comment-submit">发表评论</button>
+        <textarea id="secondTextArea" {% if session.get('isLogin') != 'true' %}disabled="true"{% endif %}
+        class="col-10" placeholder="请发表文明合法言论"></textarea>
+        <button class="col-2 btn btn-primary comment-submit "
+                {% if session.get(
+        'isLogin') != 'true' %}disabled="true"{% endif %}>发表评论</button>
     </div>
 </div>
 

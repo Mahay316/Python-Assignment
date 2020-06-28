@@ -27,7 +27,7 @@ class Message(Base):
         format [(Message, nickname)]
         """
         # only the author can find his/her hidden/drafted message
-        result = db.session.query(Message, User.nickname).join(User, User.user_id == Message.user_id).filter(or_(and_(
+        result = db.session.query(Message, User.nickname, User.user_id).join(User, User.user_id == Message.user_id).filter(or_(and_(
             Message.hidden == 0, Message.drafted == 0), User.user_id == session.get('user_id')),
             Message.message_id == msg_id).all()
         return result

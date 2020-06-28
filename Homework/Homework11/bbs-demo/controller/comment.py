@@ -16,7 +16,7 @@ def post_comment():
     reply_to = request.form.get('reply_to')
     reply_to_id = request.form.get('reply_to_id')
     # parameter check
-    if not (msg_id and content and reply_to and reply_to_id):
+    if not (msg_id and content and reply_to and reply_to_id) or len(content) <= 0:
         return 'invalid'
 
     try:
