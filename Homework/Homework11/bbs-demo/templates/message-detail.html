@@ -59,7 +59,7 @@
         }
 
         .comment .textarea-container textarea {
-            font-size: 12px;
+            font-size: 14px;
             display: inline-block;
             box-sizing: border-box;
             background-color: #f4f5f7;
@@ -137,11 +137,59 @@
         }
     </style>
     <script type="text/javascript">
-        /* data format: [{comment_info, user_info, reply_list: [...]}, {...}, {...}}] */
+        // msg_id is rendered by Jinja
+        const msg = Number('{{msg.message_id}}');
+        const user = Number('{{user_id}}');
+        // current page of comments
+        let curr_page = 0;
+
+        function renderPagination(page_count) {
+            let paginationBar = $('#paginationBar');
+            paginationBar.empty();
+
+            let content = '';
+            content += '<ul class="pagination">'
+
+            if (curr_page <= 0)
+                content += '<li class="page-item disabled">'
+            else
+                content += '<li class="page-item">'
+            content += '<a class="page-link" href="javascript: requestComment(msg, ' + (curr_page - 1) + ')" aria-label="Previous">'
+            content += '<span aria-hidden="true">&laquo;</span>'
+            content += '</a>'
+            content += '</li>'
+
+            for (let i = 0; i < page_count; i++) {
+                if (curr_page === i)
+                    content += '<li class="page-item disabled"><a class="page-link"' +
+                        ' href="#">' + (i + 1) + '</a></li>'
+                else
+                    content += '<li class="page-item"><a class="page-link"' +
+                        ' href="javascript: requestComment(msg, ' + i + ');">' + (i + 1) + '</a></li>'
+            }
+
+            if (curr_page >= page_count - 1)
+                content += '<li class="page-item disabled">'
+            else
+                content += '<li class="page-item">'
+            content += '<a class="page-link" href="javascript: requestComment(msg, ' + (curr_page + 1) + ')" aria-label="Next">'
+            content += '<span aria-hidden="true">&raquo;</span>'
+            content += '</a>'
+            content += '</li>'
+
+            content += '</ul>'
+
+            paginationBar.html(content);
+        }
+
+        /* data format: [page_count, [{comment_info, user_info, reply_list: [...]}, {...}, {...}}]] */
         function renderComment(data) {
+            // render pagination bar
+            renderPagination(data[0]);
+
+            data = data[1];
             let commentDiv = $('#commentDiv');
             commentDiv.empty();
-            console.log(data);
 
             let content = '';
             // construct new comments
@@ -198,14 +246,11 @@
                 url: '/comment/' + articleId + '-' + pageId,
                 method: 'get',
                 success: function (data) {
+                    curr_page = pageId;
                     renderComment(data);
                 }
             });
         }
-
-        // msg_id is rendered by Jinja
-        const msg = Number('{{msg.message_id}}');
-        const user = Number('{{user_id}}');
 
         function postComment(type, reply_to, reply_to_id) {
             // mainTextArea is comment for the message
@@ -245,15 +290,18 @@
                     reply_to_id: reply_to_id
                 },
                 success: function (data) {
-                   if (data === 'permission-denied') {
-                       bootbox.alert({title: '错误提示', message: '请先登录再发表评论'});
-                   } else if (data === 'invalid') {
-                       bootbox.alert({title: '错误提示', message: '参数异常'});
-                   } else if (data === 'success') {
-                        requestComment(msg, 0);
-                   } else {
-                       bootbox.alert({title: '错误提示', message: '评论发表失败', backdrop: true});
-                   }
+                    if (data === 'permission-denied') {
+                        bootbox.alert({title: '错误提示', message: '请先登录再发表评论'});
+                    } else if (data === 'invalid') {
+                        bootbox.alert({title: '错误提示', message: '参数异常'});
+                    } else if (data === 'success') {
+                        if (type === 'main')
+                            requestComment(msg, 0);
+                        else if (type === 'second')
+                            requestComment(msg, curr_page);
+                    } else {
+                        bootbox.alert({title: '错误提示', message: '评论发表失败', backdrop: true});
+                    }
                 }
             });
         }
@@ -423,6 +471,10 @@
                     <!-- comments here -->
                 </div>
 
+                <nav id="paginationBar" aria-label="Page navigation example" style="margin: auto;">
+                    <!-- pagination bar here -->
+                </nav>
+
             </div>
         </div>
         <div class="col-3" style="padding-left: 15px">
@@ -475,7 +527,8 @@
         <textarea id="secondTextArea" {% if session.get('isLogin') != 'true' %}disabled="true"{% endif %}
         class="col-10" placeholder="请发表文明合法言论"></textarea>
         <button class="col-2 btn btn-primary comment-submit "
-                {% if session.get('isLogin') != 'true' %}disabled="true"{% endif %}>发表评论</button>
+                {% if session.get(
+        'isLogin') != 'true' %}disabled="true"{% endif %}>发表评论</button>
     </div>
 </div>
 

@@ -36,6 +36,13 @@ class Comment(Base):
         return result
 
     @staticmethod
+    def count_original_comment(msg_id):
+        """return the number of comments of message msg_id"""
+        return Comment.query \
+            .filter(Comment.message_id == msg_id, Comment.hidden == 0, Comment.reply_to == 0) \
+            .count()
+
+    @staticmethod
     def find_reply_by_comment(reply_to):
         """find replies to a certain comment"""
         # reply_to can also constraint the message that the reply belongs to

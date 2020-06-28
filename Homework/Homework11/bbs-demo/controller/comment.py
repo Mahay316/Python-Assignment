@@ -33,7 +33,9 @@ def post_comment():
 def get_comment(msg_id, page):
     """return certain page of comments of message msg_id"""
     res = flatten_query_result(Comment.find_original_comment(msg_id, page * 10, 10))
+    # the number of pages of comments, 10 comments per page
+    count = (Comment.count_original_comment(msg_id) - 1) // 10 + 1
     for c in res:
         c['reply_list'] = flatten_query_result(Comment.find_reply_by_comment(c['comment_id']))
 
-    return jsonify(res)
+    return jsonify((count, res))
