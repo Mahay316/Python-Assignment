@@ -37,7 +37,7 @@ def page_not_found(err):
 
 @app.route('/test')
 def get_test():
-    return render_template('profile-message-list.html')
+    return render_template('profile-comment-list.html')
 
 
 # register function for Jinja

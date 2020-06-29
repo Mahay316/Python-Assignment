@@ -36,6 +36,16 @@ def get_message_list(page):
         return 'fail'
 
 
+@profile.route('/profile/comment/<int:page>')
+def get_comment(page):
+    pass
+
+
+@profile.route('/profile/reply/<int:page>')
+def get_reply(page):
+    pass
+
+
 @profile.route('/profile', methods=['PUT'])
 def change_profile():
     new_nickname = request.form.get('nickname')
