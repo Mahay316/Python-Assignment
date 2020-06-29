@@ -8,6 +8,128 @@
 <body>
 {% include 'navigator.html' %}
 
+<!-- content -->
+<div class="container">
+    <div class="row">
+        <div id='mainContent' class="row col-9" style="margin: 0;">
+            <div class="col-12 section">
+                {% for i in range(result | length) %}
+                <div class="comment-item" {% if i == 0 %}style="border-top-width: 0;"{% endif %}>
+                    <div class="d-flex justify-content-start relation">
+                        <img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/>
+                        <span style="line-height: 24px;">你&nbsp;回复&nbsp;&nbsp;</span>
+                        <img class="rounded-circle avatar" src="/static/img/{{result[i][2]}}"/>
+                        <span style="line-height: 24px;">
+                            {% if session.get('user_id') == result[i][0].reply_to_id %}
+                            自己
+                            {% else %}
+                            {{result[i][1]}}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info">
+                        日期: 2020-05-12 18:20:03&nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if result[i][0].hidden %}
+                        <a class="info" href="#">显示</a>
+                        {% else %}
+                        <a class="info" href="#">隐藏</a>
+                        {% endif %}
+                    </div>
+                    <div class="intro">
+                        评论测试评论测试评论测试评论测试评论测试
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- pagination -->
+            <div class="d-flex justify-content-center col-12 section align-content-center">
+                <nav class="page-num">
+                    <ul class="pagination" style="margin: 0;">
+                        <li class="page-item {% if curr_page <= 0 %}disabled{% endif %}">
+                            <a class="page-link" href="/profile/reply/{{curr_page - 1}}"
+                               aria-label="Previous">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+
+                        <!-- 超出12页将隐藏中间页码 -->
+                        {% if page_count > 12 %}
+                        {% for i in range(6) %}
+                        <li class="page-item {% if curr_page == i %}disabled{% endif %}">
+                            <a class="page-link" href="/profile/reply/{{i}}">{{i + 1}}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                        {% if curr_page > 6 and curr_page <= page_count - 6 %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">{{curr_page}}</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                        {% endif %}
+                        {% for i in range(page_count - 6, page_count) %}
+                        <li class="page-item {% if curr_page == i %}disabled{% endif %}">
+                            <a class="page-link" href="/profile/reply/{{i}}">{{i + 1}}</a>
+                        </li>
+                        {% endfor %}
+
+                        {% else %}
+
+                        {% for i in range(page_count) %}
+                        <li class="page-item {% if curr_page == i %}disabled{% endif %}">
+                            <a class="page-link"
+                               href="/profile/reply/{{i}}">{{i + 1}}</a>
+                        </li>
+                        {% endfor %}
+                        {% endif %}
+
+                        <li class="page-item {% if curr_page >= page_count - 1 %}disabled{% endif %}">
+                            <a class="page-link" href="/profile/reply/{{curr_page + 1}}" aria-label="Next">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="col-3" style="padding-left: 15px;">
+            <div id='sidebar' class="col-12 list-group" id="sidebar" style="padding: 0; margin-top: 15px;">
+                <span href="#" class="list-group-item list-group-item-action active text-center">
+                    留言统计
+                </span>
+
+                <span class="list-group-item list-group-item-action text-center">
+                    共发表评论: {{statistics[0]}}
+                </span>
+                <span class="list-group-item list-group-item-action text-center">
+                    隐藏评论: {{statistics[1]}}
+                </span>
+                <span class="list-group-item list-group-item-action text-center">
+                    原始评论: {{statistics[2]}}
+                </span>
+                <span class="list-group-item list-group-item-action text-center">
+                    回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;复: {{statistics[3]}}
+                </span>
+
+                <a href="#" class="list-group-item list-group-item-action active text-center"
+                   onclick="scrollToTop()">
+                    <svg class="bi bi-arrow-up-left-circle-fill text-light" width="1em" height="1em"
+                         viewBox="0 0 16 16"
+                         fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                         style="margin-bottom: 3px; margin-left: -3px;">
+                        <path fill-rule="evenodd"
+                              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM9.5 5h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0V6.707l4.146 4.147a.5.5 0 0 0 .708-.708L6.707 6H9.5a.5.5 0 0 0 0-1z"/>
+                    </svg>
+                    回到顶部
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% include 'footer.html' %}
 </body>
 </html>

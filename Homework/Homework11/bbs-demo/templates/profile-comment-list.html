@@ -41,10 +41,15 @@
                     </div>
                     <div class="info">
                         日期: 2020-05-12 18:20:03&nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if result[i][0].hidden %}
+                        <a class="info" href="#">显示</a>
+                        {% else %}
                         <a class="info" href="#">隐藏</a>
+                        {% endif %}
                     </div>
                     <div class="intro">
-                        评论测试评论测试评论测试评论测试评论测试
+                        {{get_summary(result[i][0].content, 40)}}
+                        {% if result[i][0].content | string | length > 40 %}...{% endif %}
                     </div>
                 </div>
                 {% endfor %}

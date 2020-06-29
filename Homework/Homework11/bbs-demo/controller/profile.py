@@ -42,9 +42,10 @@ def get_comment(page):
         return 'permission-denied'
 
     try:
-        comments = Comment.find_self_comment(session.get('user_id'), page * 20, 20)
-        page_count = (Comment.count_self_comment(session.get('user_id')) - 1) // 20 + 1
+        comments = Comment.find_self_comment(session.get('user_id'), page * 15, 15)
+        page_count = (Comment.count_self_comment(session.get('user_id')) - 1) // 15 + 1
         statistics = Comment.get_statistics(session.get('user_id'))
+        print(type(comments[0][0].content))
         return render_template('profile-comment-list.html', result=comments, page_count=page_count,
                                curr_page=page, statistics=statistics)
     except IOError as e:
@@ -54,7 +55,18 @@ def get_comment(page):
 
 @profile.route('/profile/reply/<int:page>')
 def get_reply(page):
-    pass
+    if session.get('isLogin') != 'true':
+        return 'permission-denied'
+
+    try:
+        comments = Comment.find_reply_to(session.get('user_id'), page * 15, 15)
+        page_count = (Comment.count_reply_to(session.get('user_id')) - 1) // 15 + 1
+        statistics = Comment.get_statistics(session.get('user_id'))
+        return render_template('profile-reply-list.html', result=comments, page_count=page_count,
+                               curr_page=page, statistics=statistics)
+    except IOError as e:
+        print(e)
+        return 'fail'
 
 
 @profile.route('/profile', methods=['PUT'])

@@ -13,5 +13,6 @@ def type_to_str(msg_type):
 def get_summary(html_content, length):
     """extract text from html to generate a short summary"""
     # remove HTML tags
+    html_content = str(html_content)
     summary = re.sub('<.+?>', '', html_content)
     return summary[:length]
