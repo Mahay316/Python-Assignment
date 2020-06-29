@@ -41,7 +41,47 @@
     </style>
 </head>
 <body>
-{% include 'navigator.html' %}
+<!-- navigator -->
+<div class="menu bg-light shadow">
+    <div class="container" style="padding: 0;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-size: 16px">
+            <a class="navbar-brand brand" href="/">BBS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">查询</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">热议</a>
+                    </li>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            更多
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="https://github.com/Mahay316/Python-Assignment/issues/new"
+                               target="_blank">反馈</a>
+                            <a class="dropdown-item" target="_blank"
+                               href="https://github.com/Mahay316/Python-Assignment/tree/master/Homework/Homework11">访问Github</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">关于</a>
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn btn-outline-dark" onclick="doRegister();">注册</button>
+            </div>
+        </nav>
+    </div>
+</div>
 
 <!-- for redirection -->
 <p class="sr-only" id="from">{{from_url}}</p>
@@ -54,8 +94,7 @@
     <form>
         <div class="form-group">
             <label for="inputAccount">用户名</label>
-            <input type="text" class="form-control" id="inputAccount" aria-describedby="emailHelp"
-                   placeholder="用户名或电子邮件">
+            <input type="text" class="form-control" id="inputAccount" placeholder="用户名或电子邮件">
         </div>
         <div class="form-group">
             <label for="inputPassword">密码</label>

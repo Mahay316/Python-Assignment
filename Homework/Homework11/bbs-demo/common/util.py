@@ -30,3 +30,10 @@ def save_session(user):
     session['nickname'] = user.nickname
     session['avatar'] = user.avatar
     session['role'] = user.role
+
+
+def startsWithList(string: str, matchList: list) -> bool:
+    for s in matchList:
+        if string.startswith(s):
+            return True
+    return False

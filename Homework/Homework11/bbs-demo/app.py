@@ -1,5 +1,5 @@
-from common import save_session, get_summary, type_to_str
-from flask import Flask, session, request, render_template
+from common import save_session, get_summary, type_to_str, startsWithList
+from flask import Flask, session, request, render_template, redirect
 from controller import auth, ueditor, message, comment, profile
 from model import User, init_db
 
@@ -19,15 +19,15 @@ def auto_login():
                 save_session(result[0])
 
 
-# @app.before_request
-# def verify_login():
-#     print(request.path)
-#     """verify requests that need login"""
-#     # ignore pages don't need login
-#     if request.path in ['/login', '/register', '/', '/index']:
-#         return None
-#     if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
-#         return redirect('/login?from=' + request.path)
+@app.before_request
+def verify_login():
+    print(request.path)
+    """verify requests that need login"""
+    # ignore pages don't need login
+    if not startsWithList(request.path, ['/profile']):
+        return
+    if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
+        return redirect('/login?from=' + request.path)
 
 
 @app.errorhandler(404)
