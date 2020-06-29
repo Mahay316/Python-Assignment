@@ -35,6 +35,11 @@ def page_not_found(err):
     return render_template('error-404.html')
 
 
+@app.route('/test')
+def get_test():
+    return render_template('test.html')
+
+
 # register function for Jinja
 app.jinja_env.globals.update(get_summary=get_summary)
 app.jinja_env.globals.update(type_to_str=type_to_str)

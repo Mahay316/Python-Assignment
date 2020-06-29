@@ -1,7 +1,7 @@
 # controller responsible for authentication and registration
 from common import save_session
 from flask import Blueprint, request, session, redirect, make_response, render_template
-from model import User, Message
+from model import User, Message, Comment
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 
@@ -81,21 +81,22 @@ def register():
     return 'success'
 
 
-@auth.route('/profile', methods=['GET', 'PUT'])
+@auth.route('/profile', methods=['GET'])
 def get_profile():
-    if request.method == 'GET':
-        if session.get('user_id') is not None:
-            result = User.find_by_id(session.get('user_id'))
-            msg_count = Message.count_user_message(session.get('user_id'))
-            return render_template('profile.html', user=result[0], msg_count=msg_count)
-        else:
-            return 'error'
-    elif request.method == 'PUT':
-        new_nickname = request.form.get('nickname')
-        if session.get('user_id') is not None and new_nickname is not None:
-            User.change_nickname(session.get('user_id'), new_nickname)
-            return 'success'
-        else:
-            return 'invalid'
+    if session.get('user_id') is not None:
+        result = User.find_by_id(session.get('user_id'))
+        msg_count = Message.count_user_message(session.get('user_id'))
+        comment_count = Comment.count_user_comment(session.get('user_id'))
+        return render_template('profile.html', user=result[0], msg_count=msg_count, comment_count=comment_count)
+    else:
+        return 'error'
 
 
+@auth.route('/profile', methods=['PUT'])
+def change_profile():
+    new_nickname = request.form.get('nickname')
+    if session.get('user_id') is not None and new_nickname is not None:
+        User.change_nickname(session.get('user_id'), new_nickname)
+        return 'success'
+    else:
+        return 'invalid'

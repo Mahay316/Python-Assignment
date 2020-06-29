@@ -17,8 +17,8 @@
     <script src="/static/js/userAuth.js"></script>
     <style>
         .info-box {
-            margin-top: 30px;
-            margin-bottom: 30px;
+            margin-top: 20px;
+            margin-bottom: 15px;
             padding: 15px;
             border: 2px solid rgba(221, 221, 221, 0.7);
             background-color: #f8f9fa;
@@ -31,6 +31,12 @@
             border: 1px solid #dedede;
             box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.12);
             margin-bottom: 10px;
+        }
+
+        .change-btn {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 600;
         }
     </style>
     <script type="text/javascript">
@@ -134,58 +140,117 @@
     </div>
 </div>
 
-<div class="container info-box">
-    <div class="row">
-        <div class="col-2" style="text-align: center">
-            <div class="col-12">
-                <img class="rounded-circle avatar" src="/static/img/{{user.avatar}}"/>
-            </div>
-            <a class="col-12" href="#">修改头像</a>
+<div class="row">
+    <div class="col-3">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="profileTab" data-toggle="pill" href="#profilePanel" role="tab">个人信息</a>
+            <a class="nav-link" id="passwordTab" data-toggle="pill" href="#passwordPanel" role="tab">修改密码</a>
+            <a class="nav-link" id="emailTab" data-toggle="pill" href="#emailPanel" role="tab">安全邮箱</a>
         </div>
-        <div class="col-6">
-            <form>
-                <div class="form-group row">
-                    <label for="infoNickname" class="col-2 col-form-label">用户昵称</label>
-                    <div class="col-8">
-                        <input type="text" class="form-control" id="infoNickname" value="{{user.nickname}}">
+    </div>
+    <div class="col-9">
+        <div class="tab-content" id="tabContent">
+            <div class="tab-pane fade show active" id="profilePanel" role="tabpanel">
+                <div class="container info-box">
+                    <div class="row">
+                        <div class="col-3" style="text-align: center">
+                            <div class="col-12">
+                                <img class="rounded-circle avatar" src="/static/img/{{user.avatar}}"/>
+                            </div>
+                            <a class="col-12" href="#">修改头像</a>
+                        </div>
+                        <div class="col-8">
+                            <form>
+                                <div class="form-group row">
+                                    <label for="infoNickname" class="col-2 col-form-label">用户昵称</label>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" id="infoNickname"
+                                               value="{{user.nickname}}">
+                                    </div>
+                                    <button class="btn btn-primary col-2" id="saveNickname">保存</button>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">用&nbsp;&nbsp;户&nbsp;&nbsp;名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext"
+                                               value="{{user.username}}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">注册时间</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext"
+                                               value="{{user.create_time}}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">发表留言</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext"
+                                               value="{{msg_count}}篇">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">发表评论</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext"
+                                               value="{{comment_count}}条">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <button class="btn btn-primary col-2" id="saveNickname">保存</button>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">用&nbsp;&nbsp;户&nbsp;&nbsp;名</label>
-                    <div class="col-sm-10">
-                        <input type="text" readonly class="form-control-plaintext"
-                               value="{{user.username}}">
+            </div>
+            <div class="tab-pane fade" id="passwordPanel" role="tabpanel">
+                <div class="info-box">
+                    <div class="col-8" style="margin: auto;">
+                        <form>
+                            <div class="form-group">
+                                <label for="originalPassword">原密码</label>
+                                <input type="password" class="form-control" id="originalPassword" placeholder="请输入原密码">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">新密码</label>
+                                <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                            </div>
+                            <div class="form-group">
+                                <label for="verifyPassword">确认密码</label>
+                                <input type="password" class="form-control" id="verifyPassword"
+                                       placeholder="再输入一遍新密码以确认">
+                            </div>
+                            <button id="changeBtn" class="btn btn-primary col-12 change-btn">修改密码</button>
+                        </form>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">发表留言</label>
-                    <div class="col-sm-10">
-                        <input type="text" readonly class="form-control-plaintext"
-                               value="{{msg_count}}篇">
+            </div>
+            <div class="tab-pane fade" id="emailPanel" role="tabpanel">
+                <div class="info-box">
+                    <div class="col-8" style="margin: auto;">
+                        <form>
+                            <div class="form-group row">
+                                <label for="infoNickname" class="col-2 col-form-label">邮箱地址</label>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="emailAddress"
+                                           placeholder="请输入邮箱地址"
+                                           {% if user.email %}value="{{user.email}}" disabled="true"{% endif %}>
+                                </div>
+                                <button class="btn btn-primary col-2" id="sendCode"
+                                        {% if user.email %}hidden{% endif %}>验证邮箱</button>
+                                <button class="btn btn-primary col-2" id="changeEmail">修改邮箱</button>
+                            </div>
+                            <div class="form-group row">
+                                <label for="infoNickname" class="col-2 col-form-label">验证码</label>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="emailCode"
+                                           placeholder="请输入收到的验证码">
+                                </div>
+                            </div>
+                            <button id="emailBtn" class="btn btn-primary col-12 change-btn">绑定安全邮箱</button>
+                        </form>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">注册时间</label>
-                    <div class="col-sm-10">
-                        <input type="text" readonly class="form-control-plaintext"
-                               value="{{user.create_time}}">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-2 col-form-label">安全邮箱</label>
-                    <div class="col-8">
-                        {% if user.email %}
-                        <input type="text" readonly class="form-control-plaintext"
-                               value="{{user.email}}">
-                        {% else %}
-                        <input type="text" class="form-control"
-                               placeholder="添加安全邮箱">
-                        {% endif %}
-                    </div>
-                    <button class="col-2 btn btn-primary">{% if user.email %}修改邮箱{% else %}验证邮箱{% endif %}</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

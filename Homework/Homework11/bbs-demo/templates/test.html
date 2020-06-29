@@ -6,41 +6,35 @@
     <script src="/static/js/jquery-3.5.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <script type="text/javascript">
-        $(function () {
-            $('[data-toggle="popover"]').popover();
-        });
-    </script>
 </head>
 <body>
-<div class="row col-12 comment-real">
-    <div class="col-1" style="padding: 0;">
-        <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
+<div class="row">
+    <div class="col-3">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
+               aria-controls="v-pills-home" aria-selected="true">Home</a>
+            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+               aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
+               aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab"
+               aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+        </div>
     </div>
-    <div class="row col-11 comment-box">
-        <div class="col-12 comment-name">Mahay</div>
-        <div class="col-12 comment-content">
-            <p class="text">comment 测试</p>
-        </div>
-        <div class="col-12 comment-info">2020-06-27 20:02:26&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#" class="comment-info">回复</a>
-        </div>
-        <div class="col-12 reply-box">
-            <div class="row reply-item">
-                <a class="col-1" style="padding: 0;" href="#">
-                    <img class="rounded-circle reply-avatar" src="/static/img/usericon.jpeg"/>
-                </a>
-                <div class="col-11" style="padding: 0; margin-bottom: 10px;">
-                    <span class="comment-name">Mahay&nbsp;</span>
-                    <span class="text">reply 测试</span>
-                </div>
-                <div class="col-1" style="visibility: hidden;"></div>
-                <div class="col-11 comment-info" style="padding: 0">2020-06-27 20:05:34&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="#" class="comment-info">回复</a>
-                </div>
+    <div class="col-9">
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                ...
+            </div>
+            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">Profile
+            </div>
+            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                ...
+            </div>
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                ...
             </div>
         </div>
-
     </div>
 </div>
 </body>

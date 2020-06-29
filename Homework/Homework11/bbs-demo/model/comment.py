@@ -58,6 +58,10 @@ class Comment(Base):
             .count()
 
     @staticmethod
+    def count_user_comment(user_id):
+        return Comment.query.filter(Comment.user_id == user_id).count()
+
+    @staticmethod
     def find_reply_by_comment(reply_to):
         """find replies to a certain comment"""
         # reply_to can also constraint the message that the reply belongs to
