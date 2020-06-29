@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <link href="/static/img/favicon.png" rel="SHORTCUT ICON">
     <title>我的消息</title>
+
+    <!-- Bootstrap JQuery依赖 -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
+
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/message-list.css"/>
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <link rel="stylesheet" href="/static/css/comment-list.css"/>
+    <script src="/static/js/userAuth.js"></script>
+    <script src="/static/js/accessory.js"></script>
+    <script src="/static/js/accessory-adjust.js"></script>
 </head>
 <body>
 {% include 'navigator.html' %}
@@ -16,16 +29,19 @@
                 {% for i in range(result | length) %}
                 <div class="comment-item" {% if i == 0 %}style="border-top-width: 0;"{% endif %}>
                     <div class="d-flex justify-content-start relation">
-                        <img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/>
-                        <span style="line-height: 24px;">你&nbsp;回复&nbsp;&nbsp;</span>
                         <img class="rounded-circle avatar" src="/static/img/{{result[i][2]}}"/>
                         <span style="line-height: 24px;">
-                            {% if session.get('user_id') == result[i][0].reply_to_id %}
-                            自己
-                            {% else %}
                             {{result[i][1]}}
-                            {% endif %}
                         </span>
+                        {% if result[i][0].reply_to == 0 %}
+                        <span style="line-height: 24px;">&nbsp;评论了&nbsp;&nbsp;</span>
+                        <img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/>
+                        <span style="line-height: 24px;">你&nbsp;的留言</span>
+                        {% else %}
+                        <span style="line-height: 24px;">&nbsp;回复了&nbsp;&nbsp;</span>
+                        <img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/>
+                        <span style="line-height: 24px;">你&nbsp;的评论</span>
+                        {% endif %}
                     </div>
                     <div class="info">
                         日期: 2020-05-12 18:20:03&nbsp;&nbsp;&nbsp;&nbsp;
@@ -36,7 +52,8 @@
                         {% endif %}
                     </div>
                     <div class="intro">
-                        评论测试评论测试评论测试评论测试评论测试
+                        {{get_summary(result[i][0].content, 40)}}
+                        {% if result[i][0].content | string | length > 40 %}...{% endif %}
                     </div>
                 </div>
                 {% endfor %}

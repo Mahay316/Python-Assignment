@@ -85,14 +85,16 @@ class Comment(Base):
         """query replies to user_id, return records from offset to offset + length"""
         result = db.session.query(Comment, User.nickname, User.avatar) \
             .join(User, User.user_id == Comment.user_id) \
-            .filter(Comment.reply_to_id == user_id, Comment.hidden == 0) \
+            .filter(Comment.reply_to_id == user_id, Comment.hidden == 0, Comment.user_id != user_id) \
             .order_by(Comment.comment_id.desc()).limit(length).offset(offset).all()
         return result
 
     @staticmethod
     def count_reply_to(user_id):
         """return the number of comments that replied to user_id"""
-        return Comment.query.filter_by(Comment.reply_to_id == user_id, Comment.hidden == 0).count()
+        return Comment.query\
+            .filter(Comment.reply_to_id == user_id, Comment.hidden == 0, Comment.user_id != user_id)\
+            .count()
 
     @staticmethod
     def find_self_comment(self_id, offset, length):

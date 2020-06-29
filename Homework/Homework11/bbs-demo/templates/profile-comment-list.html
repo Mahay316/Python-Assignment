@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/static/css/comment-list.css"/>
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
+    <script src="/static/js/accessory-adjust.js"></script>
 </head>
 <body>
 {% include 'navigator.html' %}
@@ -26,7 +27,7 @@
         <div id='mainContent' class="row col-9" style="margin: 0;">
             <div class="col-12 section">
                 {% for i in range(result | length) %}
-                <div class="comment-item" {% if i == 0 %}style="border-top-width: 0;"{% endif %}>
+                <div class="comment-item" {% if i== 0 %}style="border-top-width: 0;" {% endif %}>
                     <div class="d-flex justify-content-start relation">
                         <img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/>
                         <span style="line-height: 24px;">你&nbsp;回复&nbsp;&nbsp;</span>
