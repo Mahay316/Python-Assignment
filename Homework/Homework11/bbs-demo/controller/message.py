@@ -46,7 +46,7 @@ def get_msg(msg_id):
     """get message with message id message_id"""
     try:
         users = User.find_new(4)
-        result = Message.find_by_id(msg_id)
+        result = Message.find_by_id(msg_id, session.get('user_id'))
         if len(result) != 1:
             # if length == 0, then message doesn't exist
             # if length > 1, then the Database integrity is corrupted

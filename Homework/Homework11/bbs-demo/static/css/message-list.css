@@ -37,7 +37,7 @@
     margin: 10px 0;
 }
 
-.msg-list .detail .title a {
+.msg-list .detail .title .headline {
     font-size: 20px;
     margin: 10px 0;
     color: orange;
@@ -54,4 +54,8 @@
     font-size: 16px;
     line-height: 25px;
     color: #292b2d;
+}
+
+.page-num {
+    margin: 20px;
 }

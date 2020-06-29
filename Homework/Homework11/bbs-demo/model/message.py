@@ -22,16 +22,16 @@ class Message(Base):
     user = db.relationship('User')
 
     @staticmethod
-    def find_by_id(msg_id):
+    def find_by_id(msg_id, self_id):
         """find message record by message id
         format [(Message, nickname)]
         """
-        # only the author can find his/her hidden/drafted message
-        result = db.session.query(Message, User.nickname, User.user_id).join(User,
-                                                                             User.user_id == Message.user_id).filter(
-            or_(and_(
-                Message.hidden == 0, Message.drafted == 0), User.user_id == session.get('user_id')),
-            Message.message_id == msg_id).all()
+        # only the author(self_id) can find his/her hidden/drafted message
+        result = db.session.query(Message, User.nickname, User.user_id) \
+            .join(User, User.user_id == Message.user_id) \
+            .filter(or_(and_(Message.hidden == 0, Message.drafted == 0), User.user_id == self_id),
+                    Message.message_id == msg_id) \
+            .all()
         return result
 
     @staticmethod
@@ -41,9 +41,30 @@ class Message(Base):
         return result
 
     @staticmethod
-    def count_user_message(user_id):
-        result = Message.query.filter_by(user_id=user_id).count()
+    def find_self_message(self_id, offset, length):
+        """query author's(self_id) his/her own messages, return records from offset to offset + length"""
+        result = db.session.query(Message, User.nickname, User.avatar) \
+            .join(User, User.user_id == Message.user_id) \
+            .filter(Message.user_id == self_id) \
+            .order_by(Message.message_id.desc()).limit(length).offset(offset).all()
         return result
+
+    @staticmethod
+    def get_statistics(self_id):
+        """return basic statistics of author's(self_id) messages"""
+        total = Message.query.filter_by(user_id=self_id).all()
+        result = [0, 0, 0]
+        for m in total:
+            result[0] += 1
+            if m.hidden:
+                result[1] += 1
+            if m.drafted:
+                result[2] += 1
+        return result
+
+    @staticmethod
+    def count_user_message(user_id):
+        return Message.query.filter_by(user_id=user_id).count()
 
     @staticmethod
     def insert_message(user_id, msg_type, headline, content, drafted=False):
@@ -81,7 +102,7 @@ class Message(Base):
     def find_limit_of_type(msg_type, offset, length):
         """query messages of msg_type, return records from offset to offset + length"""
         result = db.session.query(Message, User.nickname, User.avatar) \
-            .join(User, User.user_id == Message.user_id)\
+            .join(User, User.user_id == Message.user_id) \
             .filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0) \
             .order_by(Message.message_id.desc()).limit(length).offset(offset).all()
         return result
@@ -89,7 +110,9 @@ class Message(Base):
     @staticmethod
     def count_msg_of_type(msg_type):
         """return number of messages of certain type"""
-        result = Message.query.filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0).count()
+        result = Message.query \
+            .filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0) \
+            .count()
         return result
 
     @staticmethod

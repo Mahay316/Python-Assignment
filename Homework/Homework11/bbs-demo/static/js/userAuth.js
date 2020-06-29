@@ -1,15 +1,6 @@
 // 用户验证的功能，登录、注册、注销等
 
 $(function () {
-    // 用户中心下拉菜单
-    $('#loginCenter').hover(
-        function () {
-            $('.menu .userControl').css('display', 'block');
-        }, function () {
-            $('.menu .userControl').css('display', 'none');
-        }
-    );
-
     const inputAccount = $('#inputAccount');
     const inputPassword = $('#inputPassword');
     const loginBtn = $('#loginBtn');

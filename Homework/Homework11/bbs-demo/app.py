@@ -1,6 +1,6 @@
 from common import save_session, get_summary, type_to_str
 from flask import Flask, session, request, render_template
-from controller import auth, ueditor, message, comment
+from controller import auth, ueditor, message, comment, profile
 from model import User, init_db
 
 app = Flask(__name__)
@@ -37,7 +37,7 @@ def page_not_found(err):
 
 @app.route('/test')
 def get_test():
-    return render_template('test.html')
+    return render_template('profile-message-list.html')
 
 
 # register function for Jinja
@@ -52,4 +52,5 @@ if __name__ == '__main__':
     app.register_blueprint(ueditor)
     app.register_blueprint(message)
     app.register_blueprint(comment)
+    app.register_blueprint(profile)
     app.run(debug=True)

@@ -23,6 +23,15 @@ $(function () {
             });
         }
     });
+
+    // 用户中心下拉菜单
+    $('#loginCenter').hover(
+        function () {
+            $('.menu .userControl').css('display', 'block');
+        }, function () {
+            $('.menu .userControl').css('display', 'none');
+        }
+    );
 });
 
 // 回到页面顶部

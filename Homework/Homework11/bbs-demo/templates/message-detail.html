@@ -412,7 +412,7 @@
                 <button class="btn btn-outline-success mr-3" data-toggle="modal"
                         data-target="#staticBackdrop">登录
                 </button>
-                <button class="btn btn-outline-dark">注册</button>
+                <button class="btn btn-outline-dark" onclick="doRegister();">注册</button>
                 {% endif %}
             </div>
         </nav>
@@ -484,9 +484,9 @@
                 <div class="row col-11 textarea-container">
                     <textarea id="mainTextArea" class="col-10" {% if session.get('isLogin') != 'true'
                     %}disabled="true"{% endif %} placeholder="请发表文明合法言论"></textarea>
-                    <button class="col-2 btn btn-primary comment-submit" {% if session.get(
-                    'isLogin') != 'true' %}disabled="true"{% endif %}
-                    onclick="postComment('main')">
+                    <button class="col-2 btn btn-primary comment-submit"
+                            {% if session.get('isLogin') != 'true' %}disabled="true"{% endif %}
+                            onclick="postComment('main')">
                     发表评论
                     </button>
                 </div>

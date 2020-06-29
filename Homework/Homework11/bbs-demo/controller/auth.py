@@ -79,24 +79,3 @@ def register():
 
     User.do_register(username, nickname, password)
     return 'success'
-
-
-@auth.route('/profile', methods=['GET'])
-def get_profile():
-    if session.get('user_id') is not None:
-        result = User.find_by_id(session.get('user_id'))
-        msg_count = Message.count_user_message(session.get('user_id'))
-        comment_count = Comment.count_user_comment(session.get('user_id'))
-        return render_template('profile.html', user=result[0], msg_count=msg_count, comment_count=comment_count)
-    else:
-        return 'error'
-
-
-@auth.route('/profile', methods=['PUT'])
-def change_profile():
-    new_nickname = request.form.get('nickname')
-    if session.get('user_id') is not None and new_nickname is not None:
-        User.change_nickname(session.get('user_id'), new_nickname)
-        return 'success'
-    else:
-        return 'invalid'
