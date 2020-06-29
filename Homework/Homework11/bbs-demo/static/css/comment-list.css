@@ -1,0 +1,32 @@
+/* stylesheet for comment and reply management page */
+.comment-item {
+    padding: 5px 10px;
+    border-top: 1px solid #cccccc;
+    cursor: pointer;
+}
+
+.comment-item .relation {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #6d757a;
+    font-weight: 700;
+}
+
+.comment-item .avatar {
+    width: 24px;
+    height: 24px;
+    margin-right: 2px;
+}
+
+.comment-item .info {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #71777d;
+}
+
+.comment-item .intro {
+    font-size: 16px;
+    line-height: 25px;
+    color: #292b2d;
+    margin-bottom: 10px;
+}

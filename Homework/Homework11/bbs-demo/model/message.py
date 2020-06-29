@@ -42,7 +42,7 @@ class Message(Base):
 
     @staticmethod
     def find_self_message(self_id, offset, length):
-        """query author's(self_id) his/her own messages, return records from offset to offset + length"""
+        """query author's(self_id) own messages, return records from offset to offset + length"""
         result = db.session.query(Message, User.nickname, User.avatar) \
             .join(User, User.user_id == Message.user_id) \
             .filter(Message.user_id == self_id) \
@@ -53,7 +53,7 @@ class Message(Base):
     def get_statistics(self_id):
         """return basic statistics of author's(self_id) messages"""
         total = Message.query.filter_by(user_id=self_id).all()
-        result = [0, 0, 0]
+        result = [0, 0, 0, 0]
         for m in total:
             result[0] += 1
             if m.hidden:

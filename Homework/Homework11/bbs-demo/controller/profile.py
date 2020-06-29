@@ -13,7 +13,7 @@ def get_profile():
     try:
         result = User.find_by_id(session.get('user_id'))
         msg_count = Message.count_user_message(session.get('user_id'))
-        comment_count = Comment.count_user_comment(session.get('user_id'))
+        comment_count = Comment.count_self_comment(session.get('user_id'))
         return render_template('profile.html', user=result[0], msg_count=msg_count, comment_count=comment_count)
     except IOError as e:
         print(e)
@@ -38,7 +38,18 @@ def get_message_list(page):
 
 @profile.route('/profile/comment/<int:page>')
 def get_comment(page):
-    pass
+    if session.get('isLogin') != 'true':
+        return 'permission-denied'
+
+    try:
+        comments = Comment.find_self_comment(session.get('user_id'), page * 20, 20)
+        page_count = (Comment.count_self_comment(session.get('user_id')) - 1) // 20 + 1
+        statistics = Comment.get_statistics(session.get('user_id'))
+        return render_template('profile-comment-list.html', result=comments, page_count=page_count,
+                               curr_page=page, statistics=statistics)
+    except IOError as e:
+        print(e)
+        return 'fail'
 
 
 @profile.route('/profile/reply/<int:page>')
