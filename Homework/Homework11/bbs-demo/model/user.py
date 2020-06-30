@@ -48,3 +48,15 @@ class User(Base):
         if result is not None:
             result.password = new_password
             db.session.commit()
+
+    @staticmethod
+    def fuzzy_search(f_nickname, offset, length):
+        """fuzzy search users' nickname, return records from offset to offset + length"""
+        result = User.query.filter(User.nickname.like(f_nickname)) \
+            .order_by(User.user_id.desc()).limit(length).offset(offset).all()
+        return result
+
+    @staticmethod
+    def count_fuzzy_result(f_nickname):
+        """return the number of records that satisfy the fuzzy search condition"""
+        return User.query.filter(User.nickname.like(f_nickname)).count()

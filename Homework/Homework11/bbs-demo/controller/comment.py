@@ -1,4 +1,4 @@
-from common import flatten_query_result
+from common import flatten_double
 from flask import Blueprint, jsonify, session, request
 from model import Comment, Message
 
@@ -59,10 +59,10 @@ def hide_comment():
 @comment.route('/comment/<int:msg_id>-<int:page>')
 def get_comment(msg_id, page):
     """return certain page of comments of message msg_id"""
-    res = flatten_query_result(Comment.find_original_comment(msg_id, page * 10, 10))
+    res = flatten_double(Comment.find_original_comment(msg_id, page * 10, 10))
     # the number of pages of comments, 10 comments per page
     count = (Comment.count_original_comment(msg_id) - 1) // 10 + 1
     for c in res:
-        c['reply_list'] = flatten_query_result(Comment.find_reply_by_comment(c['comment_id']))
+        c['reply_list'] = flatten_double(Comment.find_reply_by_comment(c['comment_id']))
 
     return jsonify((count, res))

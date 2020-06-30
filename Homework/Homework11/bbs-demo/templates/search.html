@@ -30,7 +30,7 @@
         }
 
         .user-item {
-            border-bottom: 1px solid #cccccc;
+            border-top: 1px solid #cccccc;
             cursor: pointer;
         }
 
@@ -52,7 +52,163 @@
             margin-bottom: 10px;
             color: #71777d;
         }
+
+        .search-pagination {
+            margin-top: 20px;
+            border: 2px solid rgba(221, 221, 221, 0.7);
+            background-color: #f8f9fa;
+            box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.12)
+        }
     </style>
+    <script type="text/javascript">
+        $(function () {
+            let currPage = 0;
+            let action = 'message';
+
+            $('#messageTab').on('shown.bs.tab', function () {
+                console.log('1');
+                action = 'message';
+                requestData(0);
+            })
+            $('#userTab').on('shown.bs.tab', function () {
+                action = 'user';
+                requestData(0);
+            });
+
+            function renderPagination(page_count) {
+                let content = '';
+                content += '<nav class="page-num">';
+                content += '<ul class="pagination" style="margin: 0;">';
+
+                if (currPage <= 0)
+                    content += '<li class="page-item disabled">';
+                else
+                    content += '<li class="page-item">';
+                content += '<a class="page-link" href="javascript: requestData(' + (currPage - 1) + ');">';
+                content += '<span>&laquo;</span>';
+                content += '</a>';
+
+                for (let i = 0; i < page_count; i++) {
+                    content += '</li>';
+                    if (i === currPage)
+                        content += '<li class="page-item disabled">';
+                    else
+                        content += '<li class="page-item">';
+                    content += '<a class="page-link" href="javascript: requestData(' + i + ');">' + (i + 1) + '</a>';
+                    content += '</li>';
+                }
+
+                if (currPage >= page_count - 1)
+                    content += '<li class="page-item disabled">';
+                else
+                    content += '<li class="page-item">';
+                content += '<a class="page-link" href="javascript: requestData(' + (currPage + 1) + ');">';
+                content += '<span>&raquo;</span>';
+                content += '</a>';
+                content += '</li>';
+
+                content += '</ul>';
+                content += '</nav>';
+
+                let paginationBar = $('#paginationBar');
+                paginationBar.empty();
+                paginationBar.html(content);
+            }
+
+            function renderMessage(data) {
+                renderPagination(data[0]);
+                data = data[1];
+
+                let content = '';
+                for (let i = 0; i < data.length; i++) {
+                    if (i === 0)
+                        content += '<div class="row col-12 msg-list" style="border-top-width: 0;">';
+                    else
+                        content += '<div class="row col-12 msg-list">';
+                    content += '<div class="col-1" style="padding: 0;">';
+                    content += '<img class="rounded-circle avatar" src="/static/img/' + data[i]['avatar'] + '"/>';
+                    content += '</div>';
+                    content += '<div class="col-11 detail">';
+                    content += '<div class="title">';
+                    content += '<a class="headline" href="/message/detail/' + data[i]['message_id'] + '">' + data[i]['headline'] + '</a>';
+                    content += '</div>';
+                    content += '<div class="info">';
+                    content += '作者: ' + data[i]['nickname'];
+                    content += '&nbsp;&nbsp;&nbsp;分类: ' + data[i]['type'];
+                    content += '&nbsp;&nbsp;&nbsp;日期: ' + data[i]['create_time'];
+                    content += '&nbsp;&nbsp;&nbsp;阅读数: ' + data[i]['read_count'];
+                    content += '&nbsp;&nbsp;&nbsp;回复数: ' + data[i]['reply_count'];
+                    content += '</div>';
+                    content += '<div class="intro">' + data[i]['content'].substr(0, 150) + '...</div>';
+                    content += '</div>';
+                    content += '</div>';
+                }
+
+                let msgPanel = $('#messagePanel');
+                msgPanel.empty();
+                msgPanel.html(content);
+            }
+
+            function renderUser(data) {
+                renderPagination(data[0]);
+                data = data[1];
+
+                let content = '';
+                for (let i = 0; i < data.length; i++) {
+                    if (i === 0)
+                        content += '<div class="row user-item" style="margin: 0; border-top-width: 0;">';
+                    else
+                        content += '<div class="row user-item" style="margin: 0;">';
+                    content += '<div class="col-1" style="border: 0px solid red;">';
+                    content += '<img class="rounded-circle avatar" src="/static/img/' + data[i]['avatar'] + '"/>';
+                    content += '</div>';
+                    content += '<div class="col-10" style="border: 0px solid red;">';
+                    content += '<p class="nickname">' + data[i]['nickname'] + '</p>';
+                    content += '<p class="info">';
+                    content += '注册时间: ' + data[i]['create_time'];
+                    content += '&nbsp;&nbsp;&nbsp;&nbsp;身份: ' + data[i]['role'];
+                    content += '</p>';
+                    content += '</div>';
+                    content += '</div>';
+                }
+
+                let userPanel = $('#userPanel');
+                userPanel.empty();
+                userPanel.html(content);
+            }
+
+            window.requestData = function (pageId) {
+                currPage = pageId;
+                let keywordText = $('#keywordText');
+                let text = $.trim(keywordText.val());
+
+                // search keyword is empty, then blink
+                if (text.length === 0) {
+                    keywordText.fadeOut(100);
+                    keywordText.fadeIn(100);
+                    keywordText.fadeOut(100);
+                    keywordText.fadeIn(100);
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/search/' + pageId + '?action=' + action + '&keyword=' + text,
+                    method: 'get',
+                    success: function (data) {
+                        if (action === 'message')
+                            renderMessage(data);
+                        else
+                            renderUser(data);
+                    }
+                });
+            }
+
+            $('#keywordText').keyup(function (e) {
+                if (e.keyCode === 13)
+                    requestData(0);
+            });
+        });
+    </script>
 </head>
 <!-- force scrollbar to be visible all time -->
 <body style="overflow: scroll;">
@@ -60,9 +216,9 @@
 
 <div id="searchBar" class="container mt-4">
     <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="请输入搜索关键字">
+        <input id="keywordText" type="text" class="form-control" placeholder="请输入搜索关键字">
         <div class="input-group-append">
-            <button type="button" class="btn btn-outline-success" style="padding: 0 50px;">搜 索
+            <button onclick="requestData(0);" type="button" class="btn btn-outline-success" style="padding: 0 50px;">搜 索
             </button>
         </div>
     </div>
@@ -71,82 +227,27 @@
 <div class="container" style="padding: 0;">
     <ul class="nav nav-tabs" id="myTab" role="tablist" style="border-width: 0;">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="home-tab" style="padding: 8px 50px;" data-toggle="tab" href="#messagePanel"
+            <a class="nav-link active" id="messageTab" style="padding: 8px 50px;" data-toggle="tab" href="#messagePanel"
                role="tab">留言</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="profile-tab" style="padding: 8px 50px;" data-toggle="tab" href="#userPanel"
+            <a class="nav-link" id="userTab" style="padding: 8px 50px;" data-toggle="tab" href="#userPanel"
                role="tab">用户</a>
         </li>
     </ul>
     <div class="search-content tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="messagePanel" role="tabpanel">
-            <div class="row col-12 msg-list">
-                <div class="col-1" style="padding: 0;">
-                    <img class="rounded-circle avatar" src="/static/img/default.jpg"/>
-                </div>
-                <div class="col-11 detail">
-                    <div class="title">
-                        <a class="headline" href="#">测试</a>
-                    </div>
-                    <div class="info">
-                        作者: Mahay&nbsp;&nbsp;&nbsp;
-                        日期: 2020-07-15 08:09:12&nbsp;&nbsp;&nbsp;
-                        阅读数: 2&nbsp;&nbsp;&nbsp;
-                        回复数: 2
-                    </div>
-                    <div class="intro">搜索测试搜索测试搜索测试搜索测试搜索测试搜索测试搜索测试</div>
-                </div>
-            </div>
-            <div class="row col-12 msg-list">
-                <div class="col-1" style="padding: 0;">
-                    <img class="rounded-circle avatar" src="/static/img/default.jpg"/>
-                </div>
-                <div class="col-11 detail">
-                    <div class="title">
-                        <a class="headline" href="#">测试</a>
-                    </div>
-                    <div class="info">
-                        作者: Mahay&nbsp;&nbsp;&nbsp;
-                        日期: 2020-07-15 08:09:12&nbsp;&nbsp;&nbsp;
-                        阅读数: 2&nbsp;&nbsp;&nbsp;
-                        回复数: 2
-                    </div>
-                    <div class="intro">搜索测试搜索测试搜索测试搜索测试搜索测试搜索测试搜索测试</div>
-                </div>
-            </div>
+            <!-- Message info here -->
         </div>
         <div class="tab-pane fade" id="userPanel" role="tabpanel">
-            <div class="row user-item" style="margin: 0;">
-                <div class="col-1" style="border: 0px solid red;">
-                    <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
-                </div>
-                <div class="col-10" style="border: 0px solid red;">
-                    <p class="nickname">
-                        Mahay
-                    </p>
-                    <p class="info">
-                        注册时间: 2020-07-15 12:08:20&nbsp;&nbsp;&nbsp;&nbsp;
-                        身份: 用户
-                    </p>
-                </div>
-            </div>
-            <div class="row user-item" style="margin: 0;">
-                <div class="col-1" style="border: 0px solid red;">
-                    <img class="rounded-circle avatar" src="/static/img/usericon.jpeg"/>
-                </div>
-                <div class="col-10" style="border: 0px solid red;">
-                    <p class="nickname">
-                        Mahay
-                    </p>
-                    <p class="info">
-                        注册时间: 2020-07-15 12:08:20&nbsp;&nbsp;&nbsp;&nbsp;
-                        身份: 用户
-                    </p>
-                </div>
-            </div>
+            <!-- User info here -->
         </div>
     </div>
+</div>
+
+
+<div id="paginationBar" class="container search-pagination d-flex justify-content-center align-content-center">
+    <!-- pagination here -->
 </div>
 
 {% include 'footer.html' %}

@@ -156,3 +156,22 @@ class Message(Base):
             .filter(Message.type == msg_type, Message.hidden == 0, Message.drafted == 0) \
             .order_by(Message.reply_count.desc()).limit(length).all()
         return result
+
+    @staticmethod
+    def fuzzy_search(f_keyword, offset, length):
+        """fuzzy search messages' content and headline, return records from offset to offset + length"""
+        result = db.session.query(Message, User) \
+            .join(User, User.user_id == Message.user_id) \
+            .filter(or_(Message.headline.like(f_keyword), Message.content.like(f_keyword)),
+                    Message.hidden == 0, Message.drafted == 0) \
+            .order_by(Message.reply_count.desc()).limit(length).offset(offset).all()
+        return result
+
+    @staticmethod
+    def count_fuzzy_result(f_keyword):
+        """return the number of records that satisfy the fuzzy search condition"""
+        result = db.session.query(Message) \
+            .filter(or_(Message.headline.like(f_keyword), Message.content.like(f_keyword)),
+                    Message.hidden == 0, Message.drafted == 0).count()
+        print(result)
+        return result
