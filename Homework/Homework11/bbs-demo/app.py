@@ -21,7 +21,6 @@ def auto_login():
 
 @app.before_request
 def verify_login():
-    print(request.path)
     """verify requests that need login"""
     # ignore pages don't need login
     if not startsWithList(request.path, ['/profile']):
@@ -34,6 +33,11 @@ def verify_login():
 def page_not_found(err):
     """customized 404 page"""
     return render_template('error-404.html')
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 
 # register function for Jinja

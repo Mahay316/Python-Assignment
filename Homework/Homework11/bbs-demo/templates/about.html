@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="/static/img/favicon.png" rel="SHORTCUT ICON">
+    <title>关于BBS</title>
+    <!-- Bootstrap JQuery依赖 -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
+
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/navigator.css"/>
+    <script src="/static/js/userAuth.js"></script>
+    <style>
+        .title-line {
+            border-bottom: 1px solid #dddddd;
+            height: 28px;
+            margin: 35px 100px;
+            text-align: center;
+        }
+
+        .title-line .text {
+            padding: 0 10px;
+            background-color: #ffffff;
+            line-height: 56px;
+            font-size: 38px;
+        }
+
+        .about-content {
+            margin-top: 25px;
+            padding: 10px;
+            border: 2px solid rgba(221, 221, 221, 0.7);
+            background-color: #f8f9fa;
+            box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.12);
+            text-align: center;
+            font-size: 18px;
+            min-height: 235px;
+        }
+    </style>
+</head>
+<body>
+{% include 'navigator.html' %}
+
+<div class="title-line">
+    <span class="text">关于</span>
+</div>
+
+<div class="container about-content">
+    <br/>
+    <p>本留言板网站是Python课程设计和结课作业</p>
+    <p>作者: 赵鹏飞 软件1801班 120181110111</p>
+    <p>完整源码请访问
+        <a href="https://github.com/Mahay316/Python-Assignment/tree/master/Homework/Homework11">Github</a>
+    </p>
+    <p>项目功能介绍请参见 <b>Python课程设计报告</b></p>
+</div>
+
+{% include 'footer.html' %}
+</body>
+</html>
