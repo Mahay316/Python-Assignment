@@ -3,6 +3,8 @@ Repo for submitting Python assignment.
 
 用于Python课程练习和作业提交的仓库  
 
+### 结课作业地址: https://github.com/Mahay316/Python-Assignment/tree/master/Homework/Homework11
+
 ### 目录组织结构
 ```
 .
@@ -32,4 +34,5 @@ Repo for submitting Python assignment.
     ├── homework8/     // 4月29日第八次作业
     ├── homework9/     // 5月5日第九次作业
     ├── homework10/    // 5月28日第十次作业
+    ├── homework11/    // Python结课作业
 ```
