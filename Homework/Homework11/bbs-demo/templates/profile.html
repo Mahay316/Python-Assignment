@@ -12,6 +12,9 @@
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/bootbox.min.js"></script>
 
+    <!-- MD5依赖 -->
+    <script src="/static/js/md5.js"></script>
+
     <link rel="stylesheet" href="/static/css/navigator.css"/>
     <link rel="stylesheet" href="/static/css/popovers.css"/>
     <script src="/static/js/userAuth.js"></script>
@@ -42,6 +45,7 @@
     </style>
     <script type="text/javascript">
         $(function () {
+            /*----- change nickname -----*/
             const saveBtn = $('#saveNickname');
             const nickname = $('#infoNickname');
 
@@ -79,6 +83,93 @@
                                 backdrop: true
                             });
                             setTimeout('location.reload();', 1000);
+                        }
+                    }
+                });
+            });
+
+            /*----- change password -----*/
+            const oldPassword = $('#oldPassword');
+            const newPassword = $('#newPassword');
+            const verifyPassword = $('#verifyPassword');
+            const changeBtn = $('#changeBtn');
+
+            // initialize popover
+            oldPassword.popover({
+                content: '原密码不能为空',
+                placement: 'top',
+                trigger: 'manual',
+            });
+            oldPassword.focus(function () {
+                oldPassword.popover('hide');
+            });
+
+            newPassword.popover({
+                content: '新密码不能为空',
+                placement: 'top',
+                trigger: 'manual',
+            });
+            newPassword.focus(function () {
+                newPassword.popover('hide');
+            });
+
+            verifyPassword.popover({
+                content: '两次输入的密码不相同',
+                placement: 'top',
+                trigger: 'manual',
+            });
+            verifyPassword.focus(function () {
+                verifyPassword.popover('hide');
+            });
+
+            changeBtn.click(function () {
+                // prevent user's clicking multiple times
+                changeBtn.attr('disabled', true);
+
+                // data verification
+                let oldPass = $.trim(oldPassword.val());
+                if (oldPass.length === 0) {
+                    changeBtn.removeAttr('disabled');
+                    oldPassword.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-top');
+                    return false;
+                }
+
+                let newPass = $.trim(newPassword.val());
+                if (newPass.length === 0) {
+                    changeBtn.removeAttr('disabled');
+                    newPassword.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-top');
+                    return false;
+                }
+
+                let verPass = $.trim(verifyPassword.val());
+                // two passwords don't match
+                if (newPass !== verPass) {
+                    changeBtn.removeAttr('disabled');
+                    verifyPassword.popover('show');
+                    $('.popover').addClass('popover-danger popover-danger-top');
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/profile?action=password',
+                    method: 'put',
+                    data: {
+                        old_password: hex_md5(oldPass),
+                        new_password: hex_md5(newPass)
+                    },
+                    success: function (data) {
+                        changeBtn.removeAttr('disabled');
+                        if (data === 'success') {
+                            bootbox.alert({title: '信息提示', message: '更改密码成功', backdrop: true});
+                            setTimeout('location.reload();', 500);
+                        } else if (data === 'wrong') {
+                            bootbox.alert({title: '错误提示', message: '原密码错误'});
+                        } else if (data === 'permission-denied') {
+                            bootbox.alert({title: '错误提示', message: '请先登录'});
+                        } else if (data === 'invalid') {
+                            bootbox.alert({title: '错误提示', message: '参数错误'});
                         }
                     }
                 });
@@ -156,8 +247,8 @@
                     <div class="col-8" style="margin: auto;">
                         <form>
                             <div class="form-group">
-                                <label for="originalPassword">原密码</label>
-                                <input type="password" class="form-control" id="originalPassword" placeholder="请输入原密码">
+                                <label for="oldPassword">原密码</label>
+                                <input type="password" class="form-control" id="oldPassword" placeholder="请输入原密码">
                             </div>
                             <div class="form-group">
                                 <label for="newPassword">新密码</label>
@@ -182,10 +273,11 @@
                                 <div class="col-8">
                                     <input type="text" class="form-control" id="emailAddress"
                                            placeholder="请输入邮箱地址"
-                                           {% if user.email %}value="{{user.email}}" disabled="true"{% endif %}>
+                                           {% if user.email %}value="{{user.email}}" disabled="true" {% endif %}>
                                 </div>
                                 <button class="btn btn-primary col-2" id="sendCode"
-                                        {% if user.email %}hidden{% endif %}>验证邮箱</button>
+                                        {% if user.email %}hidden{% endif %}>验证邮箱
+                                </button>
                                 <button class="btn btn-primary col-2" id="changeEmail">修改邮箱</button>
                             </div>
                             <div class="form-group row">

@@ -40,3 +40,11 @@ class User(Base):
         result.nickname = nickname
         db.session.commit()
         return result
+
+    @staticmethod
+    def change_password(user_id, new_password):
+        """change user's password, verification happens in controller"""
+        result = User.query.filter_by(user_id=user_id).first()
+        if result is not None:
+            result.password = new_password
+            db.session.commit()

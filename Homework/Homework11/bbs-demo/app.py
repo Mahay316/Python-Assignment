@@ -1,6 +1,6 @@
 from common import save_session, get_summary, type_to_str, startsWithList
 from flask import Flask, session, request, render_template, redirect
-from controller import auth, ueditor, message, comment, profile
+from controller import auth, ueditor, message, comment, profile, search
 from model import User, init_db
 
 app = Flask(__name__)
@@ -40,6 +40,7 @@ def page_not_found(err):
 app.jinja_env.globals.update(get_summary=get_summary)
 app.jinja_env.globals.update(type_to_str=type_to_str)
 
+
 if __name__ == '__main__':
     app.app_context().push()
     init_db(app)
@@ -49,4 +50,5 @@ if __name__ == '__main__':
     app.register_blueprint(message)
     app.register_blueprint(comment)
     app.register_blueprint(profile)
+    app.register_blueprint(search)
     app.run(debug=True)

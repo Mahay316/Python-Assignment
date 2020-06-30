@@ -70,9 +70,33 @@ def get_reply(page):
 
 @profile.route('/profile', methods=['PUT'])
 def change_profile():
-    new_nickname = request.form.get('nickname')
-    if session.get('user_id') is not None and new_nickname is not None:
-        User.change_nickname(session.get('user_id'), new_nickname)
-        return 'success'
-    else:
-        return 'invalid'
+    if session.get('isLogin') != 'true':
+        return 'permission-denied'
+
+    # action -> nickname, password
+    action = request.args.get('action')
+
+    if action == 'nickname':
+        new_nickname = request.form.get('nickname')
+        if new_nickname is not None:
+            try:
+                User.change_nickname(session.get('user_id'), new_nickname)
+                return 'success'
+            except IOError as e:
+                print(e)
+                return 'fail'
+    elif action == 'password':
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+        try:
+            result = User.find_by_id(session.get('user_id'))
+            if len(result) == 1 and result[0].password == old_password \
+                    and new_password is not None and len(new_password) == 32:
+                User.change_password(session.get('user_id'), new_password)
+                return 'success'
+            else:
+                return 'wrong'
+        except IOError as e:
+            print(e)
+            return 'fail'
+    return 'invalid'

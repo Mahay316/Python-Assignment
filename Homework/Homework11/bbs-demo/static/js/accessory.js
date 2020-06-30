@@ -6,23 +6,26 @@ $(function () {
     const sidebar = $("#sidebar");
     const offset = sidebar.offset();
     const documentHeight = $(document).height();
-    $(window).scroll(function () {
-        const sideBarHeight = sidebar.height();
-        if ($(window).scrollTop() > offset.top) {
-            let newPosition = ($(window).scrollTop() - offset.top) + topPadding;
-            const maxPosition = documentHeight - (sideBarHeight + 368);
-            if (newPosition > maxPosition) {
-                newPosition = maxPosition;
+
+    if (sidebar.length > 0) {
+        $(window).scroll(function () {
+            const sideBarHeight = sidebar.height();
+            if ($(window).scrollTop() > offset.top) {
+                let newPosition = ($(window).scrollTop() - offset.top) + topPadding;
+                const maxPosition = documentHeight - (sideBarHeight + 368);
+                if (newPosition > maxPosition) {
+                    newPosition = maxPosition;
+                }
+                sidebar.stop().animate({
+                    marginTop: newPosition
+                });
+            } else {
+                sidebar.stop().animate({
+                    marginTop: 15
+                });
             }
-            sidebar.stop().animate({
-                marginTop: newPosition
-            });
-        } else {
-            sidebar.stop().animate({
-                marginTop: 15
-            });
-        }
-    });
+        });
+    }
 
     // 用户中心下拉菜单
     $('#loginCenter').hover(
