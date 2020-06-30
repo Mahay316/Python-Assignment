@@ -51,6 +51,15 @@ class Comment(Base):
         return result.comment_id
 
     @staticmethod
+    def show_comment(comment_id):
+        """show the comment of the certain comment_id"""
+        result = Comment.query.filter_by(comment_id=comment_id).first()
+        if result is not None:
+            result.hidden = 0
+            db.session.commit()
+        return result.comment_id
+
+    @staticmethod
     def count_original_comment(msg_id):
         """return the number of comments of message msg_id"""
         return Comment.query \

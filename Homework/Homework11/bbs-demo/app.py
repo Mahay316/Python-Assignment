@@ -32,12 +32,8 @@ def verify_login():
 
 @app.errorhandler(404)
 def page_not_found(err):
+    """customized 404 page"""
     return render_template('error-404.html')
-
-
-@app.route('/test')
-def get_test():
-    return render_template('profile-comment-list.html')
 
 
 # register function for Jinja

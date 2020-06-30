@@ -28,12 +28,13 @@ def post_comment():
         return 'fail'
 
 
-@comment.route('/comment', methods=['DELETE'])
+@comment.route('/comment/toggle', methods=['POST'])
 def hide_comment():
     # hiding comments requires login
     if session.get('isLogin') != 'true':
         return 'permission-denied'
 
+    hide = bool(int(request.form.get('toggle')))
     comment_id = request.form.get('comment_id')
     result = Comment.find_by_id(comment_id)
 
@@ -44,7 +45,10 @@ def hide_comment():
     else:
         # the comment exists and current user has permission
         try:
-            Comment.hide_comment(comment_id)
+            if hide:
+                Comment.hide_comment(comment_id)
+            else:
+                Comment.show_comment(comment_id)
             return 'success'
         except IOError as e:
             print(e)

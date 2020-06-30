@@ -20,25 +20,59 @@ def index():
     return render_template('index.html', msgs=msgs, users=users, type_map=type_map, msg_count=msg_count)
 
 
-@message.route('/message', methods=['POST'])
+@message.route('/message', methods=['POST', 'PUT'])
 def post_message():
+    # verbose check for security purpose, actually not necessary
+    if session.get('isLogin') != 'true':
+        return 'permission_denied'
+
     msg_type = request.form.get('type')
     headline = request.form.get('headline')
     content = request.form.get('content')
     drafted = bool(int(request.form.get('drafted')))
 
-    # verbose check for security purpose, actually not necessary
-    if session.get('user_id') is None:
-        return 'permission_denied'
-
     if not (msg_type and headline and content):
         return 'invalid'
 
+    if request.method == 'POST':
+        # post a new message
+        try:
+            msg_id = Message.insert_message(session.get('user_id'), msg_type, headline, content, drafted)
+            return str(msg_id)
+        except IOError:
+            return 'failed'
+    elif request.method == 'PUT':
+        # update a message
+        msg_id = request.form.get('msg_id')
+        if not msg_id:
+            return 'invalid'
+
+        try:
+            return str(Message.update_message(msg_id, msg_type, headline, content, drafted))
+        except IOError:
+            return 'failed'
+
+
+@message.route('/message/toggle', methods=['POST'])
+def toggle_message():
+    if session.get('isLogin') != 'true':
+        return 'permission-denied'
+
+    msg_id = request.form.get('msg_id')
+    hide = bool(int(request.form.get('toggle')))
+    result = Message.find_by_id(msg_id, session.get('user_id'))
+    if len(result) != 1:
+        return 'invalid'
+
     try:
-        msg_id = Message.insert_message(session.get('user_id'), msg_type, headline, content, drafted)
-        return str(msg_id)
-    except IOError:
-        return 'failed'
+        if hide:
+            Message.hide_message(msg_id, session.get('user_id'))
+        else:
+            Message.show_message(msg_id, session.get('user_id'))
+        return 'success'
+    except IOError as e:
+        print(e)
+        return 'fail'
 
 
 @message.route('/message/detail/<msg_id>')

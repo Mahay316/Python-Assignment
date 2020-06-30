@@ -207,7 +207,7 @@
                 content += '<a href="javascript: renderTextArea(\'#com' + data[i]['comment_id'] + '\')" class="comment-info">回复</a>';
                 if (data[i]['is_owner'])
                     content += '&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript: hideComment('
-                            + data[i]['comment_id'] + ');" class="comment-info">隐藏</a>';
+                        + data[i]['comment_id'] + ');" class="comment-info">隐藏</a>';
                 content += '</div>';
                 content += '<div class="col-12 reply-box">';
                 let tmp = data[i]['reply_list'];
@@ -245,6 +245,29 @@
             area.css('display', 'flex');
             $('#nestedArea button').attr('onclick', 'postComment("second", '
                 + $(where).attr('id').substr(3) + ', ' + $(where + ' .comment-name').attr('id').substr(4) + ')');
+        }
+
+        function hideComment(comment_id) {
+            $.ajax({
+                url: '/comment/toggle',
+                method: 'post',
+                data: {
+                    toggle: 1,
+                    comment_id: comment_id
+                },
+                success: function (data) {
+                    if (data === 'invalid') {
+                        bootbox.alert({title: '错误提示', message: '非法参数', backdrop: true});
+                    } else if (data === 'permission-denied') {
+                        bootbox.alert({title: '错误提示', message: '未登录', backdrop: true});
+                    } else if (data === 'fail') {
+                        bootbox.alert({title: '错误提示', message: '隐藏失败', backdrop: true});
+                    } else {
+                        // success
+                        requestComment(msg, 0);
+                    }
+                }
+            });
         }
 
         function requestComment(articleId, pageId) {
@@ -312,26 +335,6 @@
             });
         }
 
-        function hideComment(comment_id) {
-            $.ajax({
-                url: '/comment',
-                method: 'delete',
-                data: {comment_id: comment_id},
-                success: function (data) {
-                    if (data === 'invalid') {
-                         bootbox.alert({title: '错误提示', message: '非法参数', backdrop: true});
-                    } else if (data === 'permission-denied') {
-                         bootbox.alert({title: '错误提示', message: '未登录', backdrop: true});
-                    } else if (data === 'fail') {
-                        bootbox.alert({title: '错误提示', message: '隐藏失败', backdrop: true});
-                    } else {
-                        // success
-                        requestComment(msg, 0);
-                    }
-                }
-            });
-        }
-
         $(function () {
             requestComment(msg, 0);
 
@@ -357,6 +360,11 @@
             });
         });
     </script>
+    <style>
+        .badge {
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
 {% include 'navigator.html' %}
@@ -404,6 +412,8 @@
         <div id='mainContent' class="row col-9" style="margin: 10px 0 0 0;">
             <div class="col-12 message-detail">
                 <div class="col-12 title">
+                    {% if msg.hidden %}<a href="#" class="badge badge-danger">hidden</a>{% endif %}
+                    {% if msg.drafted %}<a href="#" class="badge badge-warning">drafted</a>{% endif %}
                     {{msg.headline}}
                 </div>
                 <div class="col-12 info">
@@ -427,8 +437,9 @@
                     <textarea id="mainTextArea" class="col-10" {% if session.get('isLogin') != 'true'
                     %}disabled="true"{% endif %} placeholder="请发表文明合法言论"></textarea>
                     <button class="col-2 btn btn-primary comment-submit"
-                            {% if session.get('isLogin') != 'true' %}disabled="true"{% endif %}
-                            onclick="postComment('main')">
+                            {% if session.get(
+                    'isLogin') != 'true' %}disabled="true"{% endif %}
+                    onclick="postComment('main')">
                     发表评论
                     </button>
                 </div>

@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="/static/css/navigator.css"/>
     <script src="/static/js/userAuth.js"></script>
+    <script src="/static/js/accessory.js"></script>
 
     <!-- UEditor 依赖 -->
     <script type="text/javascript" src="/static/ueditor/ueditor.config.js"></script>
@@ -91,10 +92,15 @@
                         'background' //背景
                     ]
                 ]
+            })
+            ue.ready(function () {
+                // initialize content
+                this.setContent('{% if msg %}{{msg.content | safe}}{% endif %}');
             });
 
             const headline = $('#headline');
             const msgType = $('#messageType');
+            const msg_id = Number('{{msg_id}}');
 
             // util function for verification
             function verifyMessage() {
@@ -114,13 +120,17 @@
             }
 
             function postMessage(drafted) {
+                let requestMethod = 'put';
+                if (msg_id === 0)
+                    requestMethod = 'post';
+
                 $.ajax({
                     url: '/message',
-                    method: 'post',
+                    method: requestMethod,
                     data: {
+                        msg_id: msg_id,  // required only when updating message
                         type: msgType.val(),
                         headline: headline.val(),
-                        // html element need to be encoded
                         content: ue.getContent(),
                         drafted: drafted ? 1 : 0
                     },
@@ -135,7 +145,7 @@
                             if (drafted) {
                                 bootbox.alert({title: '信息提示', message: '保存成功</br>将为您跳转...', backdrop: true});
                                 setTimeout(function () {
-                                    location.href = '/user/message';
+                                    location.href = '/message/detail/' + data;
                                 }, 500);
                             } else {
                                 bootbox.alert({title: '信息提示', message: '发布成功</br>将为您跳转...', backdrop: true});
@@ -191,7 +201,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">文章标题</span>
             </div>
-            <input type="text" class="form-control" id="headline">
+            <input type="text" class="form-control" id="headline" {% if msg %}value="{{msg.headline}}"{% endif %}>
         </div>
         <div class="col-12">
             <script id="content" type="text/plain"></script>
@@ -200,9 +210,9 @@
             <form>
                 <div class="form-row align-items-center" style="margin: 0;">
                     <select class="col custom-select" id="messageType">
-                        <option value="-1" selected>文章类型</option>
+                        <option value="-1" {% if not msg %}selected{% endif %}>文章类型</option>
                         {% for i in range(msg_type | length) %}
-                        <option value="{{i}}">{{msg_type[i]}}</option>
+                        <option value="{{i}}" {% if msg and msg.type == i %}selected{% endif %}>{{msg_type[i]}}</option>
                         {% endfor %}
                     </select>
                     <div class="col my-1" style="text-align: right">

@@ -17,6 +17,37 @@
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
     <script src="/static/js/accessory-adjust.js"></script>
+    <script type="text/javascript">
+        function toggleComment(comment_id, hide) {
+            $.ajax({
+                url: '/comment/toggle',
+                method: 'post',
+                data: {
+                    toggle: hide ? 1 : 0,
+                    comment_id: comment_id
+                },
+                success: function (data) {
+                    if (data === 'invalid') {
+                        bootbox.alert({title: '错误提示', message: '非法参数', backdrop: true});
+                    } else if (data === 'permission-denied') {
+                        bootbox.alert({title: '错误提示', message: '未登录', backdrop: true});
+                    } else if (data === 'fail') {
+                        bootbox.alert({title: '错误提示', message: '隐藏失败', backdrop: true});
+                    } else {
+                        // success
+                        location.reload();
+                    }
+                }
+            });
+        }
+    </script>
+    <style>
+        .badge {
+            line-height: initial;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
 {% include 'navigator.html' %}
@@ -27,7 +58,7 @@
         <div id='mainContent' class="row col-9" style="margin: 0;">
             <div class="col-12 section">
                 {% for i in range(result | length) %}
-                <div class="comment-item" {% if i== 0 %}style="border-top-width: 0;" {% endif %}>
+                <div onclick="console.log(1);" class="comment-item" {% if i== 0 %}style="border-top-width: 0;" {% endif %}>
                     <div class="d-flex justify-content-start relation">
                         <img class="rounded-circle avatar" src="/static/img/{{session.get('avatar')}}"/>
                         <span style="line-height: 24px;">你&nbsp;回复&nbsp;&nbsp;</span>
@@ -39,16 +70,17 @@
                             {{result[i][1]}}
                             {% endif %}
                         </span>
+                        {% if result[i][0].hidden %}<a href="#" class="badge badge-danger">hidden</a>{% endif %}
                     </div>
                     <div class="info">
                         日期: 2020-05-12 18:20:03&nbsp;&nbsp;&nbsp;&nbsp;
                         {% if result[i][0].hidden %}
-                        <a class="info" href="#">显示</a>
+                        <a class="info" onclick="javascript: toggleComment({{result[i][0].comment_id}}, false);">显示</a>
                         {% else %}
-                        <a class="info" href="#">隐藏</a>
+                        <a class="info" href="javascript: toggleComment({{result[i][0].comment_id}}, true);">隐藏</a>
                         {% endif %}
                     </div>
-                    <div class="intro">
+                    <div class="intro" onclick="location.href = '/message/detail/{{result[i][0].message_id}}';">
                         {{get_summary(result[i][0].content, 40)}}
                         {% if result[i][0].content | string | length > 40 %}...{% endif %}
                     </div>

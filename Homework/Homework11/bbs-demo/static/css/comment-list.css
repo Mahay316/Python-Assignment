@@ -2,7 +2,6 @@
 .comment-item {
     padding: 5px 10px;
     border-top: 1px solid #cccccc;
-    cursor: pointer;
 }
 
 .comment-item .relation {
@@ -29,4 +28,5 @@
     line-height: 25px;
     color: #292b2d;
     margin-bottom: 10px;
+    cursor: pointer;
 }

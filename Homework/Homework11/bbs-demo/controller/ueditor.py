@@ -1,13 +1,24 @@
 # controller responsible for responding and configuring UEditor
 from common import type_map
-from flask import Blueprint, request, render_template, jsonify, session
+from flask import Blueprint, request, render_template, jsonify, session, abort
+from model import Message
 
 ueditor = Blueprint('ueditor', __name__, template_folder='../templates')
 
 
 @ueditor.route('/editor')
 def editor():
-    return render_template('editor.html', msg_type=type_map)
+    msg_id = request.args.get('msg_id')
+    if msg_id is not None:
+        result = Message.find_by_id(msg_id, session.get('user_id'))
+        print(result)
+        if len(result) == 1:
+            return render_template('editor.html', msg_type=type_map, msg=result[0][0], msg_id=msg_id)
+        else:
+            abort(404)
+    else:
+        # edit new message
+        return render_template('editor.html', msg_type=type_map, msg=None, msg_id=0)
 
 
 @ueditor.route('/uedit', methods=['GET', 'POST'])

@@ -77,6 +77,39 @@ class Message(Base):
         return msg.message_id
 
     @staticmethod
+    def update_message(msg_id, msg_type, headline, content, drafted=False):
+        """update message of msg_id"""
+        msg = db.session.query(Message).filter_by(message_id=msg_id).first()
+        print(msg.message_id)
+        if msg is None:
+            return 0
+        msg.type = msg_type
+        msg.headline = headline
+        msg.content = content
+        msg.drafted = drafted
+        db.session.commit()
+        return msg.message_id
+
+    @staticmethod
+    def hide_message(msg_id, self_id):
+        # prevent user from altering other's message
+        result = Message.query \
+            .filter(Message.message_id == msg_id, Message.user_id == self_id).all()
+        if len(result) == 1:
+            result[0].hidden = 1
+            db.session.commit()
+
+    @staticmethod
+    def show_message(msg_id, self_id):
+        # prevent user from altering other's message
+        result = Message.query \
+            .filter(Message.message_id == msg_id, Message.user_id == self_id).all()
+        print('show', result)
+        if len(result) == 1:
+            result[0].hidden = 0
+            db.session.commit()
+
+    @staticmethod
     def increase_read_count(msg_id):
         """increase message's read count by 1"""
         msg = db.session.query(Message).filter_by(message_id=msg_id).first()

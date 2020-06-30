@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/static/css/message-list.css"/>
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
+    <script src="/static/js/toggle-util.js"></script>
 </head>
 <body>
 {% include 'navigator.html' %}
@@ -40,11 +41,11 @@
                             阅读数: {{result[i][0].read_count}}&nbsp;&nbsp;&nbsp;
                             回复数: {{result[i][0].reply_count}}&nbsp;&nbsp;&nbsp;
                             {% if result[i][0].hidden %}
-                            <a href="#" class="info">显示</a>
+                            <a href="javascript: toggleMessage({{result[i][0].message_id}}, false)" class="info">显示</a>
                             {% else %}
-                            <a href="#" class="info">隐藏</a>
+                            <a href="javascript: toggleMessage({{result[i][0].message_id}}, true)" class="info">隐藏</a>
                             {% endif %}
-                            &nbsp;&nbsp;&nbsp;<a href="#" class="info">修改</a>
+                            &nbsp;&nbsp;&nbsp;<a href="/editor?msg_id={{result[i][0].message_id}}" class="info">修改</a>
                         </div>
                         <div class="intro">{{get_summary(result[i][0].content, 100)}}...</div>
                     </div>
