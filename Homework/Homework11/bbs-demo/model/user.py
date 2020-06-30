@@ -50,6 +50,14 @@ class User(Base):
             db.session.commit()
 
     @staticmethod
+    def change_avatar(user_id, new_avatar):
+        """change user's avatar"""
+        result = User.query.filter_by(user_id=user_id).first()
+        if result is not None:
+            result.avatar = new_avatar
+            db.session.commit()
+
+    @staticmethod
     def fuzzy_search(f_nickname, offset, length):
         """fuzzy search users' nickname, return records from offset to offset + length"""
         result = User.query.filter(User.nickname.like(f_nickname)) \

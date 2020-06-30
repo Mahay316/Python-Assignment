@@ -1,4 +1,5 @@
 # controller responsible for manipulating user's profile
+from common import endsWithList
 from flask import Blueprint, request, session, render_template
 from model import User, Comment, Message
 
@@ -68,6 +69,28 @@ def get_reply(page):
         return 'fail'
 
 
+@profile.route('/profile/avatar', methods=['POST'])
+def upload_avatar():
+    if session.get('isLogin') != 'true':
+        return 'permission-denied'
+
+    img = request.files['avatar']
+    if img is None:
+        return 'invalid'
+    filename = f'user{session.get("user_id")}_' + img.filename
+    if not endsWithList(filename, ['png', 'jpg', 'jpeg', 'gif']):
+        return 'invalid'
+
+    try:
+        img.save('./static/img/' + filename)
+        User.change_avatar(session.get('user_id'), filename)
+        session['avatar'] = filename  # update session, or avatar on the nav bar won't change
+        return 'success'
+    except IOError as e:
+        print(e)
+        return 'fail'
+
+
 @profile.route('/profile', methods=['PUT'])
 def change_profile():
     if session.get('isLogin') != 'true':
@@ -81,6 +104,7 @@ def change_profile():
         if new_nickname is not None:
             try:
                 User.change_nickname(session.get('user_id'), new_nickname)
+                session['nickname'] = new_nickname
                 return 'success'
             except IOError as e:
                 print(e)

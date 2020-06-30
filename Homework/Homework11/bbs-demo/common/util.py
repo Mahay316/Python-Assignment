@@ -77,6 +77,13 @@ def startsWithList(string: str, matchList: list) -> bool:
     return False
 
 
+def endsWithList(string: str, matchList: list) -> bool:
+    for s in matchList:
+        if string.endswith(s):
+            return True
+    return False
+
+
 def remove_html_tag(html_content):
     """remove all html tags in html_content"""
     html_content = str(html_content)

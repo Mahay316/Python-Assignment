@@ -174,11 +174,51 @@
                     }
                 });
             });
+
+            // upload avatar image
+            $('#avatar').change(function () {
+                let data = new FormData();
+                data.append('avatar', $(this)[0].files[0]);
+
+                let filename = $(this)[0].files[0].name;
+                // check type of the uploaded file
+                if (!(filename.endsWith('.png') || filename.endsWith('.jpg')
+                    || filename.endsWith('.jpeg') || filename.endsWith('.gif')))
+                    return false;
+
+                $.ajax({
+                    url: '/profile/avatar',
+                    data: data,
+                    method: 'post',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    mimeType: 'multipart/form-data',
+                    success: function (data) {
+                        console.log(data);
+                        if (data === 'success') {
+                            bootbox.alert({title: '消息提示', message: '更换头像成功', backdrop: true});
+                            setTimeout('location.reload();', 500);
+                        } else if (data === 'permission-denied') {
+                            bootbox.alert({title: '错误提示', message: '请先登录'});
+                        } else if (data === 'invalid') {
+                            bootbox.alert({title: '错误提示', message: '非法参数'});
+                        } else {
+                            bootbox.alert({title: '错误提示', message: '上传头像失败'});
+                        }
+                    }
+                });
+            });
         });
     </script>
 </head>
 <body>
 {% include 'navigator.html' %}
+
+<!-- invisible file form -->
+<form style="display: none;">
+    <input type="file" name="avatar" id="avatar" accept=".png,.jpg,.jpeg,.gif"/>
+</form>
 
 <div class="row">
     <div class="col-3">
@@ -197,7 +237,7 @@
                             <div class="col-12">
                                 <img class="rounded-circle avatar" src="/static/img/{{user.avatar}}"/>
                             </div>
-                            <a class="col-12" href="#">修改头像</a>
+                            <a class="col-12" id="changeAvatar" href="javascript: $('#avatar').click();">修改头像</a>
                         </div>
                         <div class="col-8">
                             <form>

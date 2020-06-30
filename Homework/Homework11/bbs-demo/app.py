@@ -40,7 +40,6 @@ def page_not_found(err):
 app.jinja_env.globals.update(get_summary=get_summary)
 app.jinja_env.globals.update(type_to_str=type_to_str)
 
-
 if __name__ == '__main__':
     app.app_context().push()
     init_db(app)
