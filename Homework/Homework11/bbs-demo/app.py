@@ -25,7 +25,7 @@ def verify_login():
     # ignore pages don't need login
     if not startsWithList(request.path, ['/profile']):
         return
-    if session.get('isLogin') is None:  # 没有登录就自动跳转到登录页面去
+    if session.get('isLogin') is None:  # redirect to login page
         return redirect('/login?from=' + request.path)
 
 
