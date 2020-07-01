@@ -10,12 +10,36 @@
 
     <script src="/static/js/jquery-3.5.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/bootbox.min.js"></script>
 
     <link rel="stylesheet" href="/static/css/navigator.css"/>
     <link rel="stylesheet" href="/static/css/message-list.css"/>
     <script src="/static/js/userAuth.js"></script>
     <script src="/static/js/accessory.js"></script>
-    <script src="/static/js/toggle-util.js"></script>
+    <script type="text/javascript">
+        function toggleMessage(msg_id, hide) {
+            $.ajax({
+                url: '/message/toggle',
+                method: 'post',
+                data: {
+                    toggle: hide ? 1 : 0,
+                    msg_id: msg_id
+                },
+                success: function (data) {
+                    if (data === 'invalid') {
+                        bootbox.alert({title: '错误提示', message: '非法参数', backdrop: true});
+                    } else if (data === 'permission-denied') {
+                        bootbox.alert({title: '错误提示', message: '未登录', backdrop: true});
+                    } else if (data === 'fail') {
+                        bootbox.alert({title: '错误提示', message: '隐藏失败', backdrop: true});
+                    } else {
+                        // success
+                        location.reload();
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 {% include 'navigator.html' %}

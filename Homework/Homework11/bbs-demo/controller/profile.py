@@ -97,7 +97,7 @@ def change_profile():
         return 'permission-denied'
 
     # action -> nickname, password
-    action = request.args.get('action')
+    action = request.form.get('action')
 
     if action == 'nickname':
         new_nickname = request.form.get('nickname')

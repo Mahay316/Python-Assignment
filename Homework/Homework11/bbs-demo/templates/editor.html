@@ -199,7 +199,7 @@
     <div class="row">
         <div class="col-12 input-group mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text">文章标题</span>
+                <span class="input-group-text">留言标题</span>
             </div>
             <input type="text" class="form-control" id="headline" {% if msg %}value="{{msg.headline}}"{% endif %}>
         </div>
@@ -210,7 +210,7 @@
             <form>
                 <div class="form-row align-items-center" style="margin: 0;">
                     <select class="col custom-select" id="messageType">
-                        <option value="-1" {% if not msg %}selected{% endif %}>文章类型</option>
+                        <option value="-1" {% if not msg %}selected{% endif %}>留言类型</option>
                         {% for i in range(msg_type | length) %}
                         <option value="{{i}}" {% if msg and msg.type == i %}selected{% endif %}>{{msg_type[i]}}</option>
                         {% endfor %}

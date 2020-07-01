@@ -73,6 +73,7 @@
                     url: '/profile',
                     method: 'put',
                     data: {
+                        action: 'nickname',
                         nickname: $.trim(nickname.val())
                     },
                     success: function (data) {
@@ -83,6 +84,12 @@
                                 backdrop: true
                             });
                             setTimeout('location.reload();', 1000);
+                        } else if (data === 'permission-denied') {
+                            bootbox.alert({title: '错误提示', message: '请先登录'});
+                        } else if (data === 'invalid') {
+                            bootbox.alert({title: '错误提示', message: '参数错误'});
+                        } else {
+                            bootbox.alert({title: '错误提示', message: '修改昵称失败'});
                         }
                     }
                 });
@@ -153,9 +160,10 @@
                 }
 
                 $.ajax({
-                    url: '/profile?action=password',
+                    url: '/profile',
                     method: 'put',
                     data: {
+                        action: 'password',
                         old_password: hex_md5(oldPass),
                         new_password: hex_md5(newPass)
                     },
